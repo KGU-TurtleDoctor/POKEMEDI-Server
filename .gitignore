@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### 추가 이그노어 ###
+*.properties
+*.yml
