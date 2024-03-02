@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### 추가 ignore ###
+*.properties
+*.yml
+build.gradle
