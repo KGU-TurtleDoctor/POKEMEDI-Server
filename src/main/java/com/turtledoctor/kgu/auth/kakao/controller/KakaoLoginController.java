@@ -25,7 +25,7 @@ public class KakaoLoginController {
 
     @Value("${kakao.redirect_uri}")
     private String kakaoRedirectUri;
-    
+
     @GetMapping("/testInfo")
     @ResponseBody
     public Map<String, Object> test(){
