@@ -21,5 +21,4 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 //        OAuth2Response oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 
-
 }
