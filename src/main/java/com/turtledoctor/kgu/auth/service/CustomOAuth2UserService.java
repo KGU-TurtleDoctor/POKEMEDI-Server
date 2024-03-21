@@ -5,7 +5,7 @@ import com.turtledoctor.kgu.auth.dto.KakaoResponse;
 import com.turtledoctor.kgu.auth.dto.OAuth2Response;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
 import com.turtledoctor.kgu.entity.UserEntity;
-import com.turtledoctor.kgu.repository.UserRepository;
+import com.turtledoctor.kgu.auth.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -29,21 +29,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2Response oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 
-        String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
-        UserEntity existData = userRepository.findByUsername(username);
+        String kakaoId = oAuth2Response.getProviderId();
+        UserEntity existData = userRepository.findBykakaoId(kakaoId);
 
         if(existData == null) { // 첫 로그인
 
             UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(username);
+            userEntity.setKakaoId(kakaoId);
             userEntity.setEmail(oAuth2Response.getEmail());
             userEntity.setName(oAuth2Response.getName());
-            userEntity.setRole("ROLE_USER");
+            userEntity.setRole("Normal User");
 
             userRepository.save(userEntity);
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
+            userDTO.setKakaoId(kakaoId);
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole("ROLE_USER");
 
@@ -57,7 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userRepository.save(existData);
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUsername());
+            userDTO.setKakaoId(existData.getKakaoId());
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole(existData.getRole());
 

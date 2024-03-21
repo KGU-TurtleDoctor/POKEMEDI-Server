@@ -6,11 +6,11 @@ import java.util.Map;
 
 //@Builder
 //@NoArgsConstructor
-public class KakaoResponse implements OAuth2Response{
+public class KakaoResponse implements OAuth2Response {
 
     private final Map<String, Object> attribute;
     public KakaoResponse(Map<String, Object> attribute) {
-        this.attribute = (Map<String, Object>) attribute.get("response");
+        this.attribute = (Map<String, Object>) attribute;
     }
 
     @Override
@@ -25,12 +25,14 @@ public class KakaoResponse implements OAuth2Response{
 
     @Override
     public String getEmail() {
-        return attribute.get("email").toString();
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attribute.get("kakao_account"); // 형변환 체크 문제.
+        return kakaoAccount.get("email").toString();
+
     }
 
     @Override
     public String getName() {
-        return attribute.get("name").toString();
+        Map<String, Object> properties = (Map<String, Object>) attribute.get("properties"); // 형변환 체크 문제.
+        return properties.get("nickname").toString();
     }
 }
-

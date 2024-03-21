@@ -1,6 +1,5 @@
 package com.turtledoctor.kgu.auth.dto;
 
-import org.apache.catalina.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -35,10 +34,15 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return null;
+        return userDTO.getName();
     }
 
-    public String getUsername() {
-        return userDTO.getUsername();
+    public String getKakaoId() {
+        return userDTO.getKakaoId();
     }
+
+    public String getEmail() { // 추가
+        return userDTO.getEmail();
+    }
+
 }
