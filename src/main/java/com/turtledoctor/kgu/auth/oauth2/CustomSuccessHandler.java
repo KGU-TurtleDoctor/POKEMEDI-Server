@@ -41,6 +41,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = jwtUtil.createJwt(KakaoId, name, email, role, 60*60*60L);
         response.addCookie(createCookie("Authorization", token));
+        response.addHeader("QWWWW",token);
 //        response.sendRedirect("http://localhost:3000/");
         response.sendRedirect("https://pokemedi-client1.vercel.app");
     }
