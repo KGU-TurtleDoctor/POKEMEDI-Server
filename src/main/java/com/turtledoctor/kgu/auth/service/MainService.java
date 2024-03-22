@@ -35,7 +35,7 @@ public class MainService {
         UserDTO userDTO = new UserDTO();
         userDTO.setName(jwtUtil.getName(jwtToken));
         userDTO.setKakaoId(jwtUtil.getkakaoId(jwtToken));
-        userDTO.setEmail("");
+        userDTO.setEmail(jwtUtil.getEmail(jwtToken));
         userDTO.setRole(jwtUtil.getRole(jwtToken));
 
         log.info("user 정보 저장 완 \n"+"userName:"+userDTO.getName()

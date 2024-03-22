@@ -19,7 +19,7 @@ public class MainController {
 
     private final MainService mainService;
 
-    @GetMapping("/test/test")
+    @GetMapping("/api/info")
     @ResponseBody
     public Map<String,Object> mainAPI(@CookieValue(name = "Authorization") String author) {
         Map<String,Object> result = new HashMap<>();
