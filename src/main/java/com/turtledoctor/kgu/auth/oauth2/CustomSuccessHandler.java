@@ -6,6 +6,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -16,9 +18,13 @@ import java.util.Collection;
 import java.util.Iterator;
 
 @Component
+@Slf4j
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
+
+    @Value("${redirectURL}")
+    String url;
 
     public CustomSuccessHandler(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -29,7 +35,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         //OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
-
         String KakaoId = customUserDetails.getKakaoId();
         String email = customUserDetails.getEmail();
         String name = customUserDetails.getName();
@@ -42,8 +47,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtUtil.createJwt(KakaoId, name, email, role, 60*60*60L);
         response.addCookie(createCookie("Authorization", token));
         response.addHeader("QWWWW",token);
-//        response.sendRedirect("http://localhost:3000/");
-        response.sendRedirect("https://pokemedi-client1.vercel.app");
+        response.sendRedirect(url);
     }
 
     private Cookie createCookie(String key, String value) {
