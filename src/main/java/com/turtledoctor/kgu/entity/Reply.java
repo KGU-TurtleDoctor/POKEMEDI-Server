@@ -26,4 +26,9 @@ public class Reply extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
+    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+
 }
