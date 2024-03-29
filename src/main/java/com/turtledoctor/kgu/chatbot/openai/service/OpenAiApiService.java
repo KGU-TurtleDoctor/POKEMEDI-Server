@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.chatbot.openai.service;
 
+import com.turtledoctor.kgu.chatbot.openai.DTO.ChatBotApiResponse;
 import com.turtledoctor.kgu.chatbot.openai.DTO.OpenAiRequest;
 import com.turtledoctor.kgu.chatbot.openai.DTO.OpenAiResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +29,19 @@ public class OpenAiApiService {
     @Value("${openai.url}")
     private String apiURL;
 
-    @Autowired
     private final RestTemplate template;
 
-    public Object sendPromptToOpenAi(String prompt){
+    public ChatBotApiResponse sendPromptToOpenAi(String prompt){
         OpenAiRequest request = new OpenAiRequest(model, prompt);
         OpenAiResponse chatGPTResponse =  template.postForObject(apiURL, request, OpenAiResponse.class);
-        return chatGPTResponse.getChoices().get(0).getMessage();
+
+        ChatBotApiResponse result = ChatBotApiResponse.builder()
+                                //추후 role enum으로 교체할 것(아직 머지가 안되서)
+                                .role("user")
+                                .content(chatGPTResponse.getChoices().get(0).getMessage().getContent())
+                                .build();
+
+        return result;
     }
 
 }
