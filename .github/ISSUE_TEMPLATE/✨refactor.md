@@ -2,7 +2,7 @@
 name: "✨Refactor"
 about: Refactor 작업 시 입력해주세요.
 title: "✨ [Refactor] : "
-labels: ":hammer: Refactor"
+labels: ''
 assignees: ''
 
 ---

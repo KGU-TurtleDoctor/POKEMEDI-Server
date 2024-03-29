@@ -2,7 +2,7 @@
 name: "❌Delete"
 about: Delete 작업 시 입력해주세요.
 title: "❌[Delete] : "
-labels: ":fire: Delete, :hammer: Refactor"
+labels: ":fire: Delete"
 assignees: ''
 
 ---
