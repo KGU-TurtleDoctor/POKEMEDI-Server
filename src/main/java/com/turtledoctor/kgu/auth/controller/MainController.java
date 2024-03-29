@@ -4,6 +4,7 @@ import com.sun.tools.javac.Main;
 import com.turtledoctor.kgu.auth.service.MainService;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -15,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@CrossOrigin
 @RequiredArgsConstructor
+@Slf4j
 public class MainController {
 
     private final MainService mainService;
@@ -25,12 +26,15 @@ public class MainController {
     public ResponseEntity<ResponseDTO> mainAPI(@CookieValue(name = "Authorization") String author) {
         ResponseDTO re = ResponseDTO.builder().isSuccess(true).build();
 
-
-        return ResponseEntity.ok().body(ResponseDTO.builder()
+        ResponseEntity<ResponseDTO> response = ResponseEntity.ok().body(ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
                 .result(mainService.returnInfo(author))
                 .build());
+
+            log.info(response.toString());
+
+        return response;
     }
 }
 
