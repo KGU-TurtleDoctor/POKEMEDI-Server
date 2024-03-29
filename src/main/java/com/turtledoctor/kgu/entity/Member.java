@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -26,6 +27,9 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false, length = 200)
     private Long kakaoId;
+
+    @Column(nullable = false, length = 200)
+    private String email;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> postList;

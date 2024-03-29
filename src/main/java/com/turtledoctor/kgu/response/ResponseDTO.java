@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Getter
 @Builder
-class ResponseDTO {
+public class ResponseDTO {
 
     boolean result;
     int stateCode;

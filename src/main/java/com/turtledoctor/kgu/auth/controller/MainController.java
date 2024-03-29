@@ -2,7 +2,9 @@ package com.turtledoctor.kgu.auth.controller;
 
 import com.sun.tools.javac.Main;
 import com.turtledoctor.kgu.auth.service.MainService;
+import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,11 +22,10 @@ public class MainController {
     private final MainService mainService;
 
     @GetMapping("/api/info")
-    @ResponseBody
-    public Map<String,Object> mainAPI(@CookieValue(name = "Authorization") String author) {
+    public ResponseEntity<ResponseDTO> mainAPI(@CookieValue(name = "Authorization") String author) {
         Map<String,Object> result = new HashMap<>();
-        result.put("test",mainService.returnInfo(author));
-
-        return result;
+        result.put("userInfo",mainService.returnInfo(author));
+        return ResponseEntity.ok().body(ResponseDTO.builder().result(true).stateCode(200).object(result).build());
     }
 }
+
