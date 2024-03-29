@@ -2,7 +2,7 @@
 name: "\U0001F528Fix"
 about: Bug Fix 또는 Code edit 작업 시 입력해주세요.
 title: "\U0001F528[Fix] : "
-labels: ''
+labels: "\U0001F528 Fix"
 assignees: ''
 
 ---
