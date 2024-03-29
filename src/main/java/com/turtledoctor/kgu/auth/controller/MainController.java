@@ -23,9 +23,14 @@ public class MainController {
 
     @GetMapping("/api/info")
     public ResponseEntity<ResponseDTO> mainAPI(@CookieValue(name = "Authorization") String author) {
-        Map<String,Object> result = new HashMap<>();
-        result.put("userInfo",mainService.returnInfo(author));
-        return ResponseEntity.ok().body(ResponseDTO.builder().result(true).stateCode(200).object(result).build());
+        ResponseDTO re = ResponseDTO.builder().isSuccess(true).build();
+
+
+        return ResponseEntity.ok().body(ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(mainService.returnInfo(author))
+                .build());
     }
 }
 

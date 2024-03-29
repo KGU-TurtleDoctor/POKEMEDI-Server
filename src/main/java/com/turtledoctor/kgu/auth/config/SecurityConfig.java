@@ -90,7 +90,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/","/error").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS

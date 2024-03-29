@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final MemberRepository userRepository;
+    private final MemberRepository memberRepository;
 
     public CustomOAuth2UserService(MemberRepository memberRepository) {
-        this.userRepository = memberRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -31,17 +31,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2Response oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 
         String kakaoId = oAuth2Response.getProviderId();
-        Member existData = userRepository.findBykakaoId(kakaoId);
+        Member existData = memberRepository.findBykakaoId(kakaoId);
 
         if(existData == null) { // 첫 로그인
 
-            Member member = new Member();
+            Member member = Member.builder().build();
             member.setKakaoId(kakaoId);
             member.setEmail(oAuth2Response.getEmail());
             member.setName(oAuth2Response.getName());
             member.setRole(UserRole.NORMAL);
 
-            userRepository.save(member);
+            memberRepository.save(member);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setKakaoId(kakaoId);
@@ -56,7 +56,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
 
-            userRepository.save(existData);
+            memberRepository.save(existData);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setKakaoId(existData.getKakaoId());

@@ -1,13 +1,18 @@
 package com.turtledoctor.kgu.auth.service;
 
 
+import com.turtledoctor.kgu.auth.dto.LoginDTO;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
+import com.turtledoctor.kgu.entity.Member;
+import com.turtledoctor.kgu.entity.enums.UserRole;
+import com.turtledoctor.kgu.entity.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +20,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class MainService {
 
 
@@ -22,15 +28,11 @@ public class MainService {
     String secret;
         JWTUtil jwtUtil;
 
+    private final MemberRepository memberRepository;
 
 
 
-    public MainService(){
-
-    }
-
-
-    public UserDTO returnInfo(String jwtToken){
+    public LoginDTO returnInfo(String jwtToken){
         jwtUtil = new JWTUtil(secret);
         UserDTO userDTO = new UserDTO();
         userDTO.setName(jwtUtil.getName(jwtToken));
@@ -38,12 +40,16 @@ public class MainService {
         userDTO.setEmail(jwtUtil.getEmail(jwtToken));
         userDTO.setRole(jwtUtil.getRole(jwtToken));
 
-        log.info("user 정보 저장 완 \n"+"userName:"+userDTO.getName()
-                +"\nuserKaKaoId:"+userDTO.getKakaoId()
-                +"");
+        Member member = memberRepository.findBykakaoId(userDTO.getKakaoId());
+
+        LoginDTO loginDTO = LoginDTO.builder()
+                .name(member.getName())
+                .userRole(member.getRole())
+                .build();
 
 
-        return userDTO;
+
+        return loginDTO;
     }
 
 
