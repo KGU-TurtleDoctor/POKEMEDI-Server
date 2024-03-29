@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 public class CorsMvcConfig implements WebMvcConfigurer {
 
-    @Value("${redirectURL}")
+    @Value("${corsURL}")
     String url;
 
     @Bean
@@ -20,7 +20,9 @@ public class CorsMvcConfig implements WebMvcConfigurer {
                         .exposedHeaders("Authorization")
                         .allowedOriginPatterns(url)
                         .allowedHeaders("*")
-                        .allowedMethods("*"); // cors 에러 해결 테스트
+                        .allowCredentials(true)
+                        .allowedMethods("*") // cors 에러 해결 테스트
+                        .maxAge(3000);
             }
         };
     }
