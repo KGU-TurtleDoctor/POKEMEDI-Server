@@ -4,7 +4,7 @@ import com.turtledoctor.kgu.auth.dto.CustomOAuth2User;
 import com.turtledoctor.kgu.auth.dto.KakaoResponse;
 import com.turtledoctor.kgu.auth.dto.OAuth2Response;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
-import com.turtledoctor.kgu.entity.UserEntity;
+import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.auth.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -30,17 +30,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2Response oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 
         String kakaoId = oAuth2Response.getProviderId();
-        UserEntity existData = userRepository.findBykakaoId(kakaoId);
+        Member existData = userRepository.findBykakaoId(kakaoId);
 
         if(existData == null) { // 첫 로그인
 
-            UserEntity userEntity = new UserEntity();
-            userEntity.setKakaoId(kakaoId);
-            userEntity.setEmail(oAuth2Response.getEmail());
-            userEntity.setName(oAuth2Response.getName());
-            userEntity.setRole("Normal User");
+            Member member = new Member();
+            member.setKakaoId(kakaoId);
+            member.setEmail(oAuth2Response.getEmail());
+            member.setName(oAuth2Response.getName());
+            member.setRole("Normal User");
 
-            userRepository.save(userEntity);
+            userRepository.save(member);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setKakaoId(kakaoId);
