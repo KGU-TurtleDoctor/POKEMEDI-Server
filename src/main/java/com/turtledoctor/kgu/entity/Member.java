@@ -23,6 +23,9 @@ public class Member extends BaseEntity {
     private String nickname;
 
     @Column(nullable = false, length = 200)
+    private String email;
+
+    @Column(nullable = false, length = 100)
     private Long kakaoId;
 
     @Column(name = "role", columnDefinition = "VARCHAR(20)")
