@@ -1,8 +1,10 @@
 package com.turtledoctor.kgu.entity;
 
 import com.turtledoctor.kgu.entity.base.BaseEntity;
+import com.turtledoctor.kgu.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.catalina.User;
 
 import java.util.List;
 
@@ -19,6 +21,9 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false, length = 30)
     private String nickname;
+
+    @Column(name = "role", nullable = false, length = 30)
+    private UserRole userRole;
 
     @Column(nullable = false, length = 200)
     private Long kakaoId;
