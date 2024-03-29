@@ -16,19 +16,17 @@ public class Reply extends BaseEntity {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "member_id")
-    private Member member;
+
 
 
 }
