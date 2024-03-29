@@ -25,8 +25,8 @@ public class OpenAiApiController {
 
     private final OpenAiApiService openAiApiService;
 
-    @GetMapping("/prompt")
-    public ResponseEntity<ChatBotApiResponse> chat(@RequestParam(name = "prompt")String prompt){
+    @PostMapping("/prompt")
+    public ResponseEntity<ChatBotApiResponse> chat(@RequestBody String prompt){
         ChatBotApiResponse chatBotApiResponse = openAiApiService.sendPromptToOpenAi(prompt);
         return ResponseEntity.ok().body(chatBotApiResponse);
     }

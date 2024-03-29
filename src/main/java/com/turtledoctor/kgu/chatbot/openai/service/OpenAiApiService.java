@@ -40,7 +40,6 @@ public class OpenAiApiService {
                                 .role("user")
                                 .content(chatGPTResponse.getChoices().get(0).getMessage().getContent())
                                 .build();
-
         return result;
     }
 
