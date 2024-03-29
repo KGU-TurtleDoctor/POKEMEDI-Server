@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseEntity {
 
@@ -23,10 +23,11 @@ public class Member extends BaseEntity {
     private String name;
 
     @Column(name = "role", nullable = false, length = 30)
-    private UserRole userRole;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @Column(nullable = false, length = 200)
-    private Long kakaoId;
+    private String kakaoId;
 
     @Column(nullable = false, length = 200)
     private String email;

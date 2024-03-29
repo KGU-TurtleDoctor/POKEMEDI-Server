@@ -5,7 +5,8 @@ import com.turtledoctor.kgu.auth.dto.KakaoResponse;
 import com.turtledoctor.kgu.auth.dto.OAuth2Response;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
 import com.turtledoctor.kgu.entity.Member;
-import com.turtledoctor.kgu.auth.repository.UserRepository;
+import com.turtledoctor.kgu.entity.enums.UserRole;
+import com.turtledoctor.kgu.entity.repository.MemberRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -15,10 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomOAuth2UserService(MemberRepository memberRepository) {
+        this.userRepository = memberRepository;
     }
 
     @Override
@@ -38,14 +39,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             member.setKakaoId(kakaoId);
             member.setEmail(oAuth2Response.getEmail());
             member.setName(oAuth2Response.getName());
-            member.setRole("Normal User");
+            member.setRole(UserRole.NORMAL);
 
             userRepository.save(member);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setKakaoId(kakaoId);
             userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole("ROLE_USER");
+            userDTO.setRole(UserRole.NORMAL);
             userDTO.setEmail(oAuth2Response.getEmail());
 
             return new CustomOAuth2User(userDTO);
