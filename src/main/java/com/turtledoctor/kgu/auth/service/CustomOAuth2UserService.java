@@ -46,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             UserDTO userDTO = new UserDTO();
             userDTO.setKakaoId(kakaoId);
             userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(UserRole.NORMAL);
+            userDTO.setRole(String.valueOf(UserRole.NORMAL));
             userDTO.setEmail(oAuth2Response.getEmail());
 
             return new CustomOAuth2User(userDTO);
@@ -61,7 +61,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             UserDTO userDTO = new UserDTO();
             userDTO.setKakaoId(existData.getKakaoId());
             userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(existData.getRole());
+            userDTO.setRole(String.valueOf(existData.getRole()));
             userDTO.setEmail(oAuth2Response.getEmail());
 
             return new CustomOAuth2User(userDTO);
