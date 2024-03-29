@@ -13,7 +13,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry corsRegistry) {
 
         corsRegistry.addMapping("/**")
-                .exposedHeaders("Set-Cookie")
+                .exposedHeaders("*")
                 .allowedOrigins(url)
                 .allowedMethods("*"); // cors 에러 해결 테스트
     }
