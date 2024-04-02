@@ -1,16 +1,14 @@
 package com.turtledoctor.kgu.chatbot.openai.DTO;
 
-
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Builder
 @Setter
-public class ChatBotApiResponse {
+@NoArgsConstructor
+public class ChatBotApiRequest {
     Long chatHistoryId;
-    String role;
-    String content;
-
+    String prompt;
 }

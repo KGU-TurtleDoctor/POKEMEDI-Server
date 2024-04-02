@@ -20,8 +20,7 @@ import java.util.Map;
 public class OpenAiApiService {
 
 
-    @Value("${openai.api_key}")
-    private String api_key;
+
 
     @Value("${openai.model}")
     private String model;
@@ -37,10 +36,14 @@ public class OpenAiApiService {
 
         ChatBotApiResponse result = ChatBotApiResponse.builder()
                                 //추후 role enum으로 교체할 것(아직 머지가 안되서)
-                                .role("user")
+                                .role("chabot")
                                 .content(chatGPTResponse.getChoices().get(0).getMessage().getContent())
                                 .build();
         return result;
+    }
+
+    public void makeChatHistory(){
+        
     }
 
 }
