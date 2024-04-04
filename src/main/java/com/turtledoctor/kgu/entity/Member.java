@@ -1,6 +1,7 @@
 package com.turtledoctor.kgu.entity;
 
 import com.turtledoctor.kgu.entity.base.BaseEntity;
+import com.turtledoctor.kgu.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Member extends BaseEntity {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +23,14 @@ public class Member extends BaseEntity {
     private String nickname;
 
     @Column(nullable = false, length = 200)
+    private String email;
+
+    @Column(nullable = false, length = 100)
     private Long kakaoId;
+
+    @Column(name = "role", columnDefinition = "VARCHAR(20)")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> postList;
