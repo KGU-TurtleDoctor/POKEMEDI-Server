@@ -1,16 +1,17 @@
 package com.turtledoctor.kgu.response;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Map;
 
 @Getter
 @Builder
-class ResponseDTO {
+@JsonPropertyOrder({"success", "stateCode", "result"})
+public class ResponseDTO {
 
-    boolean result;
+    boolean isSuccess;
     int stateCode;
-    Map<String,Object> object;
+    Object result;
 
 }
