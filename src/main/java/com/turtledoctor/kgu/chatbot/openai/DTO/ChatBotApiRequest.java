@@ -11,4 +11,5 @@ import lombok.Setter;
 public class ChatBotApiRequest {
     Long chatHistoryId;
     String prompt;
+    Long kakaoId;
 }

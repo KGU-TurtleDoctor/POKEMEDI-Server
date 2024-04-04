@@ -1,4 +1,4 @@
-package com.turtledoctor.kgu.chatbot.openai.repository;
+package com.turtledoctor.kgu.testPackage.repository;
 
 import com.turtledoctor.kgu.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
