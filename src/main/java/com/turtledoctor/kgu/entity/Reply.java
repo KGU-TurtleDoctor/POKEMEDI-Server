@@ -25,8 +25,4 @@ public class Reply extends BaseEntity {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
-
-
-
-
 }
