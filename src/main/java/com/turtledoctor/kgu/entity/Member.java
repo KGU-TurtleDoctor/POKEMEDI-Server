@@ -22,11 +22,15 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 30)
     private String nickname;
 
-    @Column(name = "role", nullable = false, length = 30)
-    private UserRole userRole;
-
     @Column(nullable = false, length = 200)
+    private String email;
+
+    @Column(nullable = false, length = 100)
     private Long kakaoId;
+
+    @Column(name = "role", columnDefinition = "VARCHAR(20)")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> postList;
