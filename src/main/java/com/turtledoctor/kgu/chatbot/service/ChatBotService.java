@@ -47,25 +47,25 @@ public class ChatBotService {
         return result;
     }
 
-    public ChatHistory updateChatHistory(ChatHistory chatHistory){
+    private ChatHistory updateChatHistory(ChatHistory chatHistory){
         return chatHistoryService.updateChatHistory(chatHistory);
     }
 
-    public Long createChatHistory(Long kakaoId, String prompt){
+    private Long createChatHistory(Long kakaoId, String prompt){
         Member member = tempMemberService.findTempMember(kakaoId);
 
         return chatHistoryService.insertChatHistory(member, prompt);
     }
 
-    public ChatHistory findChatHistoryById(Long chatHistoryId){
+    private ChatHistory findChatHistoryById(Long chatHistoryId){
         return chatHistoryService.findChatHistory(chatHistoryId);
     }
 
-    public ChatText createChatText(String prompt,ChatRole role,ChatHistory chatHistory){
+    private ChatText createChatText(String prompt,ChatRole role,ChatHistory chatHistory){
         return chatTextService.createChatText(prompt, role, chatHistory);
     }
 
-    public ChatBotApiResponse sendPromptToOpenAi(String prompt){
+    private ChatBotApiResponse sendPromptToOpenAi(String prompt){
         return openAiApiService.sendPromptToOpenAi(prompt);
     }
 
