@@ -42,19 +42,19 @@ public class ChatBotController {
 
 
 
-    @PostMapping("/chathistory/chattextlist")
-    public ResponseEntity<ResponseDTO> findChatTextFromChatHistory(@RequestBody ChatTextListRequest chatTextListRequest){
+    @GetMapping("/chathistory/chattextlist")
+    public ResponseEntity<ResponseDTO> findChatTextFromChatHistory(@RequestParam(name="chathistoryid") Long chatHistoryId){
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .stateCode(200)
                 .isSuccess(true)
-                .result(chatBotService.findChatTextListByHisotoryID(chatTextListRequest.getChatHistoryId())).build();
+                .result(chatBotService.findChatTextListByHisotoryID(chatHistoryId)).build();
 
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/chathistory/chathistorylist")
-    public ResponseEntity<ResponseDTO> findChatHistory(@CookieValue(name = "Authorization") String author/*@RequestBody ChatHistoryListRequest chatHistoryListRequest*//*이후 쿠키에서 뽑아내는것으로 변경*/){
+    @GetMapping("/chathistory/chathistorylist")
+    public ResponseEntity<ResponseDTO> findChatHistory(@CookieValue(name = "Authorization") String author){
 
         jwtUtil = new JWTUtil(secret);
 
