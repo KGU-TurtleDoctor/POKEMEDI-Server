@@ -28,7 +28,7 @@ public class Member extends BaseEntity {
     private String email;
 
     @Column(nullable = false, length = 100)
-    private Long kakaoId;
+    private String kakaoId;
 
     @Column(name = "role", columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)

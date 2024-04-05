@@ -11,7 +11,7 @@ import com.turtledoctor.kgu.entity.ChatHistory;
 import com.turtledoctor.kgu.entity.ChatText;
 import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.enums.ChatRole;
-import com.turtledoctor.kgu.testPackage.service.TempMemberService;
+import com.turtledoctor.kgu.entity.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,14 +33,12 @@ public class ChatBotService {
     //ChatHistory 관련 서비스
     private final ChatHistoryService chatHistoryService;
 
-    //DumyData 관련 서비스
-    private final TempMemberService tempMemberService;
-
+    private final MemberRepository memberRepository;
 
 
     public List<ChatHistoryListResponse> findChatHistoriesByMember(Long kakaoId){
 
-        Member member = tempMemberService.findTempMember(kakaoId);
+        Member member = memberRepository.findBykakaoId(kakaoId.toString());
 
         List<ChatHistoryListResponse> result = chatHistoryService.findChatHistoryList(member);
 
@@ -52,7 +50,7 @@ public class ChatBotService {
     }
 
     private Long createChatHistory(Long kakaoId, String prompt){
-        Member member = tempMemberService.findTempMember(kakaoId);
+        Member member = memberRepository.findBykakaoId(kakaoId.toString());
 
         return chatHistoryService.insertChatHistory(member, prompt);
     }
