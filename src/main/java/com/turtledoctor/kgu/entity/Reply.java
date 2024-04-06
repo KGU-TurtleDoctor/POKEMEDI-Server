@@ -26,6 +26,10 @@ public class Reply extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
+    public void updateReply(String body){
+        this.body = body;
+    }
+
 
 
 
