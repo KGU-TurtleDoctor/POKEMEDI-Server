@@ -16,6 +16,7 @@ import com.turtledoctor.kgu.error.DTO.ValidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class ChatBotService {
     private final MemberRepository memberRepository;
 
 
+    @Transactional(readOnly = true)
     public List<ChatHistoryListResponse> findChatHistoriesByMember(Long kakaoId){
 
         Member member = memberRepository.findBykakaoId(kakaoId.toString());
@@ -68,6 +70,7 @@ public class ChatBotService {
         return openAiApiService.sendPromptToOpenAi(prompt);
     }
 
+    @Transactional
     public ChatBotApiResponse getResponseFromOpenAi(ChatBotApiRequest chatBotApiRequest){
 
 
@@ -114,6 +117,7 @@ public class ChatBotService {
         return chatBotApiResponse;
     }
 
+    @Transactional(readOnly = true)
     public List<ChatTextListResponse> findChatTextListByHisotoryID(Long chatHistoryId) throws ValidException {
         ChatHistory chatHistory = chatHistoryService.findChatHistory(chatHistoryId);
 

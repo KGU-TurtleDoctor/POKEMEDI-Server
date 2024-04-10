@@ -7,6 +7,7 @@ import com.turtledoctor.kgu.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class ChatHistoryService {
 
     private final ChatHistoryRepository chatHistoryRepository;
 
+    @Transactional(readOnly = true)
     public List<ChatHistoryListResponse> findChatHistoryList(Member member){
 
         List<ChatHistory> chatHistoryList = member.getChatHistoryList();
@@ -32,6 +34,7 @@ public class ChatHistoryService {
         return result;
     }
 
+    @Transactional
     public Long insertChatHistory(Member member, String prompt){
         ChatHistory chatHistory = ChatHistory.builder()
                 .chatTextList((new ArrayList<>()))
@@ -44,10 +47,12 @@ public class ChatHistoryService {
         return madeChatHistory.getId();
     }
 
+    @Transactional
     public ChatHistory updateChatHistory(ChatHistory chatHistory){
         return chatHistoryRepository.save(chatHistory);
     }
 
+    @Transactional(readOnly = true)
     public ChatHistory findChatHistory(Long chatHistoryId){
         ChatHistory chatHistory = chatHistoryRepository.findById(chatHistoryId).get();
 

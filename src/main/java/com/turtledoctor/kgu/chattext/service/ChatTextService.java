@@ -8,6 +8,7 @@ import com.turtledoctor.kgu.entity.enums.ChatRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class ChatTextService {
 
     private final ChatTextRepository chatTextRepository;
 
+    @Transactional(readOnly = true)
     public List<ChatTextListResponse> findChatTextList(ChatHistory chatHistory){
 
         List<ChatText> chatTextList = chatHistory.getChatTextList();
@@ -33,6 +35,7 @@ public class ChatTextService {
         return result;
     }
 
+    @Transactional
     public ChatText createChatText(String body, ChatRole role, ChatHistory chatHistory){
 
         ChatText chatText = ChatText.builder()
