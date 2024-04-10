@@ -1,6 +1,7 @@
 package com.turtledoctor.kgu.post.service;
 
 import com.turtledoctor.kgu.entity.Post;
+import com.turtledoctor.kgu.post.DTO.CreatePostRequestDTO;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,11 @@ public class PostService {
     private final PostRepository postRepository;
     private final TempMemberRepository tempMemberRepository;
 
-    public Long createPost(Long kakaoId) {
+    public Long createPost(CreatePostRequestDTO createPostRequestDTO) {
         Post newPost = postRepository.save(Post.builder()
-                .member(tempMemberRepository.findByKakaoId(kakaoId))
-                .title("제목")
-                .body("본문")
+                .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId()))
+                .title(createPostRequestDTO.getTitle())
+                .body(createPostRequestDTO.getBody())
                 .likes(0L)
                 .comments(0L)
                 .commentList(new ArrayList<>())
@@ -27,4 +28,7 @@ public class PostService {
         );
         return newPost.getId();
     }
+
+    //public Long updatePost(Long kakaoId) {
+    //}
 }
