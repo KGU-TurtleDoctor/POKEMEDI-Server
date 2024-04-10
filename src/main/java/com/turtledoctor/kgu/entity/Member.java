@@ -43,4 +43,8 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChatHistory> chatHistoryList;
+
+    public void updateMember(String nickname){
+        this.nickname = nickname;
+    }
 }
