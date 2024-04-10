@@ -37,15 +37,15 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         //OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
         String KakaoId = customUserDetails.getKakaoId();
-        String email = customUserDetails.getEmail();
-        String name = customUserDetails.getName();
+//        String email = customUserDetails.getEmail();
+//        String name = customUserDetails.getName();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(KakaoId, name, email, role, 60*60*60L);
+        String token = jwtUtil.createJwt(KakaoId, role, 60*60*60L); // email, role 제거
         response.addHeader("Set-Cookie",createCookie("Authorization", token).toString());
         response.addHeader("QWWWW",token);
         response.sendRedirect(url);

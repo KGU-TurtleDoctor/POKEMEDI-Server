@@ -62,18 +62,18 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        //토큰에서 kakaoId과 role 획득
+        //토큰에서 kakaoId과 role 획득. email과 name 정보는 보안 상 제거.
         String kakaoId = jwtUtil.getkakaoId(token);
-        String name = jwtUtil.getName(token); // 추가
-        String email = jwtUtil.getEmail(token); // 추가
-        log.info(email+"\n12341234");
+//        String name = jwtUtil.getName(token); // 추가
+//        String email = jwtUtil.getEmail(token); // 추가
+//        log.info(email+"\n12341234");
         String role = jwtUtil.getRole(token);
 
-        //userDTO를 생성하여 값 set
+        //userDTO를 생성하여 값 set. email과 name 정보는 보안 상 제거.
         UserDTO userDTO = new UserDTO();
         userDTO.setKakaoId(kakaoId);
-        userDTO.setName(name); // 추가
-        userDTO.setEmail(email); // 추가
+//        userDTO.setName(name); // 추가
+//        userDTO.setEmail(email); // 추가
         userDTO.setRole(role);
 
         //UserDetails에 회원 정보 객체 담기

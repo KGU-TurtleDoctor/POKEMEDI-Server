@@ -35,9 +35,9 @@ public class MainService {
     public LoginDTO returnInfo(String jwtToken){
         jwtUtil = new JWTUtil(secret);
         UserDTO userDTO = new UserDTO();
-        userDTO.setName(jwtUtil.getName(jwtToken));
+//        userDTO.setName(jwtUtil.getName(jwtToken));
         userDTO.setKakaoId(jwtUtil.getkakaoId(jwtToken));
-        userDTO.setEmail(jwtUtil.getEmail(jwtToken));
+//        userDTO.setEmail(jwtUtil.getEmail(jwtToken));
         userDTO.setRole(jwtUtil.getRole(jwtToken));
 
         Member member = memberRepository.findBykakaoId(userDTO.getKakaoId());

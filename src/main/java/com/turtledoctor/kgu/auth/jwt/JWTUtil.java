@@ -19,12 +19,12 @@ public class JWTUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String createJwt(String kakaoId, String name, String email, String role, Long expiredMs) { // 추가 name, email
+    public String createJwt(String kakaoId, String role, Long expiredMs) { // name, email 제거
 
         return Jwts.builder()
                 .claim("kakaoId", kakaoId)
-                .claim("name", name)
-                .claim("email", email)
+//                .claim("name", name)
+//                .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
@@ -41,16 +41,16 @@ public class JWTUtil {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
-    public String getEmail(String token) { // 추가
+//    public String getEmail(String token) { // 추가
+//
+//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
+//    }
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
-    }
 
-
-    public String getName(String token) { // 추가
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("name", String.class);
-    }
+//    public String getName(String token) { // 추가
+//
+//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("name", String.class);
+//    }
 
     public Boolean isExpired(String token) {
 
