@@ -1,4 +1,4 @@
-package com.turtledoctor.kgu.chatbot.chattext.DTO;
+package com.turtledoctor.kgu.chattext.DTO;
 
 import com.turtledoctor.kgu.entity.enums.ChatRole;
 import lombok.Builder;

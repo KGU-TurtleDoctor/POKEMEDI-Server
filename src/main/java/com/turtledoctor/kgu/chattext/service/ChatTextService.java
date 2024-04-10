@@ -1,7 +1,7 @@
-package com.turtledoctor.kgu.chatbot.chattext.service;
+package com.turtledoctor.kgu.chattext.service;
 
-import com.turtledoctor.kgu.chatbot.chattext.DTO.ChatTextListResponse;
-import com.turtledoctor.kgu.chatbot.chattext.repository.ChatTextRepository;
+import com.turtledoctor.kgu.chattext.DTO.ChatTextListResponse;
+import com.turtledoctor.kgu.chattext.repository.ChatTextRepository;
 import com.turtledoctor.kgu.entity.ChatHistory;
 import com.turtledoctor.kgu.entity.ChatText;
 import com.turtledoctor.kgu.entity.enums.ChatRole;

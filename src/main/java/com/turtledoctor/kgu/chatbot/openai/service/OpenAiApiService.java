@@ -1,10 +1,6 @@
 package com.turtledoctor.kgu.chatbot.openai.service;
 
 import com.turtledoctor.kgu.chatbot.openai.DTO.*;
-import com.turtledoctor.kgu.chatbot.chathistory.repository.ChatHistoryRepository;
-import com.turtledoctor.kgu.chatbot.chattext.repository.ChatTextRepository;
-import com.turtledoctor.kgu.entity.repository.MemberRepository;
-import com.turtledoctor.kgu.entity.ChatHistory;
 import com.turtledoctor.kgu.entity.enums.ChatRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

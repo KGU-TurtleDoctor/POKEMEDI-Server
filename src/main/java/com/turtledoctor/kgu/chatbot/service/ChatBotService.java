@@ -1,9 +1,9 @@
 package com.turtledoctor.kgu.chatbot.service;
 
-import com.turtledoctor.kgu.chatbot.chathistory.DTO.ChatHistoryListResponse;
-import com.turtledoctor.kgu.chatbot.chathistory.service.ChatHistoryService;
-import com.turtledoctor.kgu.chatbot.chattext.DTO.ChatTextListResponse;
-import com.turtledoctor.kgu.chatbot.chattext.service.ChatTextService;
+import com.turtledoctor.kgu.chathistory.DTO.ChatHistoryListResponse;
+import com.turtledoctor.kgu.chathistory.service.ChatHistoryService;
+import com.turtledoctor.kgu.chattext.DTO.ChatTextListResponse;
+import com.turtledoctor.kgu.chattext.service.ChatTextService;
 import com.turtledoctor.kgu.chatbot.openai.DTO.ChatBotApiRequest;
 import com.turtledoctor.kgu.chatbot.openai.DTO.ChatBotApiResponse;
 import com.turtledoctor.kgu.chatbot.openai.service.OpenAiApiService;
@@ -12,6 +12,7 @@ import com.turtledoctor.kgu.entity.ChatText;
 import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.enums.ChatRole;
 import com.turtledoctor.kgu.entity.repository.MemberRepository;
+import com.turtledoctor.kgu.error.DTO.ValidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -113,7 +114,7 @@ public class ChatBotService {
         return chatBotApiResponse;
     }
 
-    public List<ChatTextListResponse> findChatTextListByHisotoryID(Long chatHistoryId){
+    public List<ChatTextListResponse> findChatTextListByHisotoryID(Long chatHistoryId) throws ValidException {
         ChatHistory chatHistory = chatHistoryService.findChatHistory(chatHistoryId);
 
         List<ChatTextListResponse> result = new ArrayList<>();

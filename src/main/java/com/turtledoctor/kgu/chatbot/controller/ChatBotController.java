@@ -1,16 +1,14 @@
 package com.turtledoctor.kgu.chatbot.controller;
 
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
-import com.turtledoctor.kgu.chatbot.chathistory.DTO.ChatHistoryListRequest;
 import com.turtledoctor.kgu.chatbot.openai.DTO.ChatBotApiRequest;
 import com.turtledoctor.kgu.chatbot.openai.DTO.ChatBotApiResponse;
-import com.turtledoctor.kgu.chatbot.chattext.DTO.ChatTextListRequest;
 import com.turtledoctor.kgu.chatbot.service.ChatBotService;
 import com.turtledoctor.kgu.error.DTO.ErrorMessage;
+import com.turtledoctor.kgu.error.DTO.ValidException;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,10 +43,19 @@ public class ChatBotController {
     @GetMapping("/chathistory/chattextlist")
     public ResponseEntity<ResponseDTO> findChatTextFromChatHistory(@RequestParam(name="chathistoryid") Long chatHistoryId){
 
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .stateCode(200)
-                .isSuccess(true)
-                .result(chatBotService.findChatTextListByHisotoryID(chatHistoryId)).build();
+        ResponseDTO responseDTO;
+        try{
+            responseDTO = ResponseDTO.builder()
+                    .stateCode(200)
+                    .isSuccess(true)
+                    .result(chatBotService.findChatTextListByHisotoryID(chatHistoryId)).build();
+
+        }catch (ValidException e){
+            responseDTO = ResponseDTO.builder()
+                    .stateCode(401)
+                    .isSuccess(true)
+                    .result(ErrorMessage.builder().errorMessage(e.getMessage()).build()).build();
+        }
 
         return ResponseEntity.ok().body(responseDTO);
     }

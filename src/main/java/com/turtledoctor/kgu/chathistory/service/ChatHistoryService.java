@@ -1,7 +1,7 @@
-package com.turtledoctor.kgu.chatbot.chathistory.service;
+package com.turtledoctor.kgu.chathistory.service;
 
-import com.turtledoctor.kgu.chatbot.chathistory.DTO.ChatHistoryListResponse;
-import com.turtledoctor.kgu.chatbot.chathistory.repository.ChatHistoryRepository;
+import com.turtledoctor.kgu.chathistory.DTO.ChatHistoryListResponse;
+import com.turtledoctor.kgu.chathistory.repository.ChatHistoryRepository;
 import com.turtledoctor.kgu.entity.ChatHistory;
 import com.turtledoctor.kgu.entity.Member;
 import lombok.RequiredArgsConstructor;

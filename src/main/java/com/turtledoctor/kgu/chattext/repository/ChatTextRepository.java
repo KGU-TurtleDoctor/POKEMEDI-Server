@@ -1,4 +1,4 @@
-package com.turtledoctor.kgu.chatbot.chattext.repository;
+package com.turtledoctor.kgu.chattext.repository;
 
 import com.turtledoctor.kgu.entity.ChatText;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.turtledoctor.kgu.chatbot.chathistory.DTO;
+package com.turtledoctor.kgu.chathistory.DTO;
 
 
 import lombok.Getter;
