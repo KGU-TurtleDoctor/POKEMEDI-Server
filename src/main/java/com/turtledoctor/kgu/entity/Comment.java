@@ -17,11 +17,11 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(/*cascade = CascadeType.ALL,*/ optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(/*cascade = CascadeType.ALL,*/ optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
