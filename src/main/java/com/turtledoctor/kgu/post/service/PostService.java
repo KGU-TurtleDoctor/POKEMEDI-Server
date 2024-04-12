@@ -1,10 +1,7 @@
 package com.turtledoctor.kgu.post.service;
 
 import com.turtledoctor.kgu.entity.Post;
-import com.turtledoctor.kgu.post.DTO.CreatePostRequestDTO;
-import com.turtledoctor.kgu.post.DTO.PostListDTO;
-import com.turtledoctor.kgu.post.DTO.PostSearchRequestDTO;
-import com.turtledoctor.kgu.post.DTO.UpdatePostRequestDTO;
+import com.turtledoctor.kgu.post.DTO.*;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +40,13 @@ public class PostService {
         updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
         postRepository.save(updatePost);
         return updatePost.getId();
+    }
+
+    public void deletePost(DeletePostRequestDTO deletePostRequestDTO) {
+        Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + deletePostRequestDTO.getPostId()));
+
+        postRepository.delete(deletePost);
     }
 
     public List<PostListDTO> createPostListDTO() {

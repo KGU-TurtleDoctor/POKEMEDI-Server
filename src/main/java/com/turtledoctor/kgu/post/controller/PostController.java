@@ -1,9 +1,6 @@
 package com.turtledoctor.kgu.post.controller;
 
-import com.turtledoctor.kgu.post.DTO.CreatePostRequestDTO;
-import com.turtledoctor.kgu.post.DTO.PostListDTO;
-import com.turtledoctor.kgu.post.DTO.PostSearchRequestDTO;
-import com.turtledoctor.kgu.post.DTO.UpdatePostRequestDTO;
+import com.turtledoctor.kgu.post.DTO.*;
 import com.turtledoctor.kgu.post.service.PostService;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +34,7 @@ public class PostController {
         return ResponseEntity.ok().headers(headers).body(responseDTO);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<ResponseDTO> updatePost(@RequestBody UpdatePostRequestDTO updatePostRequestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("header1", "header");
@@ -49,6 +46,13 @@ public class PostController {
                 .result(postService.updatePost(updatePostRequestDTO))
                 .build();
         return ResponseEntity.ok().headers(headers).body(responseDTO);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDTO> deletePost(@RequestBody DeletePostRequestDTO deletePostRequestDTO) {
+
+        postService.deletePost(deletePostRequestDTO);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
