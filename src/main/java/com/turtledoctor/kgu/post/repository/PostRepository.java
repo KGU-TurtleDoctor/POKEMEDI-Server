@@ -15,9 +15,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     //게시글 검색 - 작성자
     //게시글 검색 - 제목
 
-    //게시글 삭제
-    //void delete(Long postId);
-
     //게시글 좋아요
     //void like(Long postId, Long memberId);
 
