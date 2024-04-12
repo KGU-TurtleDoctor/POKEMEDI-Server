@@ -21,11 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     //게시글 좋아요
     //void like(Long postId, Long memberId);
 
-    //게시글 검색 - 작성자
-    List<Post> findAllByMemberId(Long memberId);
-
-    //게시글 검색 - 제목?
-    List<Post> findAllByTitleContainingOrderByCreatedAt(String keyword);
-
+    //게시글 검색 - 제목+본문
     List<Post> findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(String titleKeyword, String bodyKeyword);
 }

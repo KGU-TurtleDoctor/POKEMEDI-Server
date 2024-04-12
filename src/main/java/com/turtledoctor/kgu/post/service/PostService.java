@@ -22,14 +22,15 @@ public class PostService {
     private final TempMemberRepository tempMemberRepository;
 
     public Long createPost(CreatePostRequestDTO createPostRequestDTO) {
-        Post newPost = Post.builder()
+        Post newPost = postRepository.save(Post.builder()
                 .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId()))
                 .title(createPostRequestDTO.getTitle())
                 .body(createPostRequestDTO.getBody())
                 .likes(0L)
                 .comments(0L)
                 .commentList(new ArrayList<>())
-                .build();
+                .build()
+        );
         return newPost.getId();
     }
 
