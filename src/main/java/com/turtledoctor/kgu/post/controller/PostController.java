@@ -3,6 +3,7 @@ package com.turtledoctor.kgu.post.controller;
 import com.turtledoctor.kgu.post.DTO.CreatePostRequestDTO;
 import com.turtledoctor.kgu.post.DTO.PostListDTO;
 import com.turtledoctor.kgu.post.DTO.PostSearchRequestDTO;
+import com.turtledoctor.kgu.post.DTO.UpdatePostRequestDTO;
 import com.turtledoctor.kgu.post.service.PostService;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,20 @@ public class PostController {
         return ResponseEntity.ok().headers(headers).body(responseDTO);
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<ResponseDTO> updatePost(@RequestBody UpdatePostRequestDTO updatePostRequestDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("header1", "header");
+
+        ResponseDTO responseDTO = ResponseDTO
+                .builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(postService.updatePost(updatePostRequestDTO))
+                .build();
+        return ResponseEntity.ok().headers(headers).body(responseDTO);
+    }
+
     @GetMapping("/list")
     public ResponseEntity<ResponseDTO> getPostList() {
         List<PostListDTO> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
@@ -61,5 +76,6 @@ public class PostController {
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
+
 
 }

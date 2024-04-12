@@ -4,6 +4,7 @@ import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.post.DTO.CreatePostRequestDTO;
 import com.turtledoctor.kgu.post.DTO.PostListDTO;
 import com.turtledoctor.kgu.post.DTO.PostSearchRequestDTO;
+import com.turtledoctor.kgu.post.DTO.UpdatePostRequestDTO;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,22 @@ public class PostService {
                 .build()
         );
         return newPost.getId();
+    }
+
+    public Long updatePost(UpdatePostRequestDTO updatePostRequestDTO) {
+        Post previousPost = postRepository.findById(updatePostRequestDTO.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + updatePostRequestDTO.getPostId()));
+        previousPost = postRepository.save(Post.builder()
+                .id(updatePostRequestDTO.getPostId())
+                .member(previousPost.getMember())
+                .title(updatePostRequestDTO.getTitle())
+                .body(updatePostRequestDTO.getBody())
+                .likes(previousPost.getLikes())
+                .comments(previousPost.getComments())
+                .commentList(previousPost.getCommentList())
+                .build()
+        );
+        return previousPost.getId();
     }
 
     public List<PostListDTO> createPostListDTO() {
