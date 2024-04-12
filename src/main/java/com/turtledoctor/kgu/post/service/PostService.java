@@ -2,12 +2,16 @@ package com.turtledoctor.kgu.post.service;
 
 import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.post.DTO.CreatePostRequestDTO;
+import com.turtledoctor.kgu.post.DTO.PostListDTO;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,20 @@ public class PostService {
         return newPost.getId();
     }
 
-    //public Long updatePost(Long kakaoId) {
-    //}
+    public List<PostListDTO> createPostListDTO() {
+        List<Post> rawPostList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<PostListDTO> postList = new ArrayList<>();
+
+        for(Post post : rawPostList) {
+            PostListDTO dto = PostListDTO.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getBody())
+                    .nickname(post.getMember().getNickname())
+                    .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
+                    .build();
+            postList.add(dto);
+        }
+        return postList;
+    }
 }
