@@ -2,6 +2,7 @@ package com.turtledoctor.kgu.post.controller;
 
 import com.turtledoctor.kgu.post.DTO.CreatePostRequestDTO;
 import com.turtledoctor.kgu.post.DTO.PostListDTO;
+import com.turtledoctor.kgu.post.DTO.PostSearchRequestDTO;
 import com.turtledoctor.kgu.post.service.PostService;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,8 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDTO> searchPostList() {
-        List<PostListDTO> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 걍고
+    public ResponseEntity<ResponseDTO> getPostList() {
+        List<PostListDTO> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
@@ -46,4 +47,19 @@ public class PostController {
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDTO> searchPostList(@RequestParam(value = "keyword") String keyword) {
+        PostSearchRequestDTO postSearchRequestDTO = new PostSearchRequestDTO();
+        postSearchRequestDTO.setKeyword(keyword);
+        List<PostListDTO> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
+
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(rawPostList)
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }

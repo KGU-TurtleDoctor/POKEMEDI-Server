@@ -25,5 +25,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByMemberId(Long memberId);
 
     //게시글 검색 - 제목?
-    List<Post> findAllByTitleContaining(String keyword);
+    List<Post> findAllByTitleContainingOrderByCreatedAt(String keyword);
+
+    List<Post> findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(String titleKeyword, String bodyKeyword);
 }
