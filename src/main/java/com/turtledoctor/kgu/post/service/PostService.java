@@ -37,19 +37,12 @@ public class PostService {
     }
 
     public Long updatePost(UpdatePostRequestDTO updatePostRequestDTO) {
-        Post previousPost = postRepository.findById(updatePostRequestDTO.getPostId())
+        Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + updatePostRequestDTO.getPostId()));
-        previousPost = postRepository.save(Post.builder()
-                .id(updatePostRequestDTO.getPostId())
-                .member(previousPost.getMember())
-                .title(updatePostRequestDTO.getTitle())
-                .body(updatePostRequestDTO.getBody())
-                .likes(previousPost.getLikes())
-                .comments(previousPost.getComments())
-                .commentList(previousPost.getCommentList())
-                .build()
-        );
-        return previousPost.getId();
+
+        updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
+        postRepository.save(updatePost);
+        return updatePost.getId();
     }
 
     public List<PostListDTO> createPostListDTO() {
