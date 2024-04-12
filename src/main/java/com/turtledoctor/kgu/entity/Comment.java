@@ -31,4 +31,8 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Reply> replyList;
 
+    public void updateComment(String body){
+        this.body = body;
+    }
+
 }

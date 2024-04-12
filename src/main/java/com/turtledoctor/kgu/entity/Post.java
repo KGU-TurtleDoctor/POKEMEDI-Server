@@ -37,4 +37,24 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
 
+    public void updatePost(String title, String body){
+        this.title = title;
+        this.body = body;
+    }
+
+    public void plusLikes(){
+        this.likes++;
+    }
+
+    public void minusLikes(){
+        this.likes--;
+    }
+
+    public void plusComments(){
+        this.comments++;
+    }
+
+    public void minusComments(){
+        this.comments--;
+    }
 }
