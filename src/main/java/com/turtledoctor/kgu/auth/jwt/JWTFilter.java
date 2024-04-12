@@ -29,18 +29,11 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
+        //request에서 Authorization 헤더를 찾음
+        String authorization= request.getHeader("Authorization");
 
-            System.out.println(cookie.getName());
-            if (cookie.getName().equals("Authorization")) {
-
-                authorization = cookie.getValue();
-            }
-        }
         //Authorization 헤더 검증
-        if (authorization == null) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
 
             System.out.println("token null");
             filterChain.doFilter(request, response);
@@ -49,8 +42,7 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        //토큰
-        String token = authorization;
+        String token = authorization.split(" ")[1];
 
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
@@ -63,7 +55,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         //토큰에서 kakaoId과 role 획득. email과 name 정보는 보안 상 제거.
-        String kakaoId = jwtUtil.getkakaoId(token);
+        Long kakaoId = jwtUtil.getkakaoId(token);
 //        String name = jwtUtil.getName(token); // 추가
 //        String email = jwtUtil.getEmail(token); // 추가
 //        log.info(email+"\n12341234");
@@ -81,8 +73,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
-        //세션에 사용자 등록
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        //세션에 사용자 등록 <-- 이거 씀?
+//        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
     }

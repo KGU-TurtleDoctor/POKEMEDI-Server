@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Member findBykakaoId(String kakaoId); // 내부 SELECT문을 날릴 수 있음.
+    Member findBykakaoId(Long kakaoId); // 내부 SELECT문을 날릴 수 있음.
 }

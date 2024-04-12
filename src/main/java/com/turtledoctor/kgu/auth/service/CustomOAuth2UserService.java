@@ -30,7 +30,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2Response oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 
-        String kakaoId = oAuth2Response.getProviderId();
+        Long kakaoId = oAuth2Response.getProviderId();
         Member existData = memberRepository.findBykakaoId(kakaoId);
 
         if(existData == null) { // 첫 로그인

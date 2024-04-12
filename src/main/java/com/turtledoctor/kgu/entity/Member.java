@@ -28,7 +28,7 @@ public class Member extends BaseEntity {
     private UserRole role;
 
     @Column(nullable = false, length = 200)
-    private String kakaoId;
+    private Long kakaoId;
 
     @Column(nullable = false, length = 200)
     private String email;

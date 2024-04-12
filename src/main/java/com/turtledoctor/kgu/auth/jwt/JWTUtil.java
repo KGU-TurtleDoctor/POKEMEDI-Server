@@ -19,7 +19,7 @@ public class JWTUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String createJwt(String kakaoId, String role, Long expiredMs) { // name, email 제거
+    public String createJwt(String category, Long kakaoId, String role, Long expiredMs) { // name, email 제거
 
         return Jwts.builder()
                 .claim("kakaoId", kakaoId)
@@ -32,9 +32,9 @@ public class JWTUtil {
                 .compact();
     }
 
-    public String getkakaoId(String token) {
+    public Long getkakaoId(String token) {
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("kakaoId", String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("kakaoId", Long.class);
     }
 
     public String getRole(String token) {
