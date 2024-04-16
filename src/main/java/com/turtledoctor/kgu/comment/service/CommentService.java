@@ -51,6 +51,8 @@ public class CommentService {
         if(optional.isEmpty()) throw new Exception("없는 게시글입니다.");
         Post post = optional.get();
 
+        post.plusComments();
+
         Comment comment = Comment.builder()
                 .body(createCommentRequest.getBody())
                 .post(post)
@@ -162,6 +164,13 @@ public class CommentService {
         else{
             comment = optional.get();
         }
+        Optional<Post> optionalPost = postRepository.findById(deleteCommentRequest.getPostId());
+
+        if(optionalPost.isEmpty()) throw new Exception("없는 게시글입니다.");
+        Post post = optionalPost.get();
+
+        post.minusComments();
+
 
         commentRepository.delete(comment);
     }
