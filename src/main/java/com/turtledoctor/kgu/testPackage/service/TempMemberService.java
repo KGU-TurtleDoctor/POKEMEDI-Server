@@ -18,12 +18,12 @@ public class TempMemberService {
 
     public Long createTempMember(Long kakaoId){
         tempMemberRepository.save(Member.builder()
-                .kakaoId(kakaoId)
+                .kakaoId(kakaoId.toString())
                 .chatHistoryList(new ArrayList<>())
                 .commentList(new ArrayList<>())
                 .replyList(new ArrayList<>())
                 .role(UserRole.NORMAL)
-                .nickname("김태완")
+                .name("김태완")
                 .postList(new ArrayList<>())
                 .email("thkim@naver.com").build()
         );

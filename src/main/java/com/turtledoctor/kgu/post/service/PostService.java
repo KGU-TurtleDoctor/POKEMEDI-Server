@@ -58,7 +58,7 @@ public class PostService {
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
-                    .nickname(post.getMember().getNickname())
+                    .nickname(post.getMember().getName())
                     .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
                     .build();
             postList.add(dto);
@@ -76,7 +76,7 @@ public class PostService {
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
-                    .nickname(post.getMember().getNickname())
+                    .nickname(post.getMember().getName())
                     .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
                     .build();
             postList.add(dto);
