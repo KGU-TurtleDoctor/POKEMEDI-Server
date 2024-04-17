@@ -67,7 +67,11 @@ public class CommentService {
     @Transactional
     public Long updateComment(UpdateCommentRequest updateCommentRequest, String authorization, Long postId) throws Exception {
         //Authorization 변환 과정 추가 예정
-        Long kakaoId = 1L;
+        Long kakaoId = 2L;
+
+        Optional<Post> optionalPost = postRepository.findById(updateCommentRequest.getPostId());
+
+        if(optionalPost.isEmpty()) throw new Exception("없는 게시글입니다.");
 
 
         Optional<Comment> optional = commentRepository.findById(updateCommentRequest.getCommentId());
@@ -155,6 +159,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(DeleteCommentRequest deleteCommentRequest) throws Exception{
+
         Comment comment;
         Optional<Comment> optional = commentRepository.findById(deleteCommentRequest.getCommentId());
 
@@ -167,6 +172,7 @@ public class CommentService {
         Optional<Post> optionalPost = postRepository.findById(deleteCommentRequest.getPostId());
 
         if(optionalPost.isEmpty()) throw new Exception("없는 게시글입니다.");
+        if(comment.getPost().getId().equals(deleteCommentRequest.getPostId())) throw new Exception("게시글에 없는 댓글입니다.");
         Post post = optionalPost.get();
 
         post.minusComments();

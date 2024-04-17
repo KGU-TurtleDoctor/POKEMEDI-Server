@@ -4,6 +4,7 @@ import com.turtledoctor.kgu.comment.DTO.Request.CreateCommentRequest;
 import com.turtledoctor.kgu.comment.DTO.Request.DeleteCommentRequest;
 import com.turtledoctor.kgu.comment.DTO.Request.FindCommentsByPostRequest;
 import com.turtledoctor.kgu.comment.DTO.Request.UpdateCommentRequest;
+import com.turtledoctor.kgu.comment.DTO.Response.CreateCommentResponse;
 import com.turtledoctor.kgu.comment.ErrorMessage;
 import com.turtledoctor.kgu.comment.service.CommentService;
 import com.turtledoctor.kgu.response.ResponseDTO;
@@ -56,22 +57,26 @@ public class CommentController {
 
         createCommentRequest.setPostId(postId);
 
-        try{                                                                //Login 기능 완성시 처리.
-            commentService.createComment(createCommentRequest,"");
+        try{                                                        //Login 기능 완성시 처리.
+            Long id = commentService.createComment(createCommentRequest,"");
+            CreateCommentResponse createCommentResponse = CreateCommentResponse.builder().commentId(id).build();
             responseDTO = ResponseDTO.builder()
-                    .isSuccess(true).stateCode(200).build();
+                    .isSuccess(true).stateCode(200).result(createCommentResponse).build();
+            return ResponseEntity.ok().body(responseDTO);
         }catch(Exception e){
 
             responseDTO = ResponseDTO.builder()
-                    .isSuccess(false).stateCode(401).result(ErrorMessage.builder().errorMessage(e.getMessage()).build()).build();
+                    .isSuccess(false).stateCode(400).result(ErrorMessage.builder().errorMessage(e.getMessage()).build()).build();
+            return ResponseEntity.badRequest().body(responseDTO);
         }
-        return ResponseEntity.ok().body(responseDTO);
+
     }
 
 
     @PutMapping("/posts/{postid}/comments/{commentid}")
     public ResponseEntity<ResponseDTO> updateComments(@PathVariable(name="postid") Long postId, @PathVariable(name="commentid") Long commentId, @RequestBody UpdateCommentRequest updateCommentRequest){
         updateCommentRequest.setCommentId(commentId);
+        updateCommentRequest.setPostId(postId);
         ResponseDTO responseDTO;
         Map<String, Object> result = new HashMap<>();
 
@@ -106,7 +111,7 @@ public class CommentController {
 
         try{
             commentService.deleteComment(deleteCommentRequest);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(ResponseDTO.builder().isSuccess(true).stateCode(200).build());
         }catch(Exception e){
             return ResponseEntity
                     .badRequest()
