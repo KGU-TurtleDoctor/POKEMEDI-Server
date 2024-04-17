@@ -22,7 +22,7 @@ public class PostService {
 
     public Long createPost(CreatePostRequestDTO createPostRequestDTO) {
         Post newPost = postRepository.save(Post.builder()
-                .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId()))
+                .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId().toString()))
                 .title(createPostRequestDTO.getTitle())
                 .body(createPostRequestDTO.getBody())
                 .likes(0L)

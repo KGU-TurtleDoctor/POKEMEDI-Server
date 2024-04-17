@@ -31,7 +31,7 @@ public class TempMemberService {
         return kakaoId;
     }
 
-    public Member findTempMember(Long kakaoId){
+    public Member findTempMember(String kakaoId){
         return tempMemberRepository.findByKakaoId(kakaoId);
     }
 }
