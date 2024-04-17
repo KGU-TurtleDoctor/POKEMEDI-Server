@@ -8,5 +8,5 @@ import java.util.List;
 public interface TempMemberRepository extends JpaRepository<Member,Long> {
     Member findByKakaoId(Long kakaoId);
 
-    List<Member> findAllByNickname(String nickname);
+    List<Member> findAllByName(String nickname);
 }
