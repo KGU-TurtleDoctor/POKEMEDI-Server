@@ -48,7 +48,7 @@ jobs:
         aws-region: ap-northeast-2
 
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./pokemedi_jar.zip s3://${{ secrets.S3_BUCKET_NAME }}/deploy
+      run: aws s3 cp --region ap-northeast-2 ./pokemedi_jar.zip s3://${{ secrets.S3_BUCKET_NAME }}/deploy/pokemedi_jar.zip
 
 # Deploy
     - name: Deploy
