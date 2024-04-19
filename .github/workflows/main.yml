@@ -60,7 +60,7 @@ jobs:
         --application-name pokemedi
         --deployment-group-name pokemedi-group
         --file-exists-behavior OVERWRITE 
-        --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=pokemedi_jar.zip
+        --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=deploy/pokemedi_jar.zip
         --region ap-northeast-2
     
       
