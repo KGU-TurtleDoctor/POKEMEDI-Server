@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/app/
+    destination: /POKEMEDI-Server
     overwrite: yes
 file_exists_behavior: OVERWRITE
 
