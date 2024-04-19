@@ -11,6 +11,7 @@ import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final TempMemberRepository tempMemberRepository;
 
+    @Transactional
     public Long createPost(CreatePostRequest createPostRequestDTO) {
         Post newPost = postRepository.save(Post.builder()
                 .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId()))
@@ -36,6 +38,7 @@ public class PostService {
         return newPost.getId();
     }
 
+    @Transactional
     public Long updatePost(UpdatePostRequest updatePostRequestDTO) {
         Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + updatePostRequestDTO.getPostId()));
@@ -45,6 +48,7 @@ public class PostService {
         return updatePost.getId();
     }
 
+    @Transactional
     public void deletePost(DeletePostRequest deletePostRequestDTO) {
         Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + deletePostRequestDTO.getPostId()));
@@ -52,6 +56,7 @@ public class PostService {
         postRepository.delete(deletePost);
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponse> createPostListDTO() {
         List<Post> rawPostList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         List<PostResponse> postList = new ArrayList<>();
@@ -69,6 +74,7 @@ public class PostService {
         return postList;
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponse> createSearchedPostListDTO(SearchPostRequest postSearchRequestDTO) {
         String keyword = postSearchRequestDTO.getKeyword();
         List<Post> rawSearchedPostList = postRepository.findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(keyword, keyword);
