@@ -37,7 +37,7 @@ jobs:
       run: cp ./build/libs/*.jar ./deploy
 
     - name: Make zip file
-      run: zip -r ./coinTalk.zip ./deploy
+      run: zip -r ./pokemedi_jar.zip ./deploy
       shell: bash
 
     - name: Configure AWS credentials
@@ -48,4 +48,19 @@ jobs:
         aws-region: ap-northeast-2
 
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./coinTalk.zip s3://$S3_BUCKET_NAME/
+      run: aws s3 cp --region ap-northeast-2 ./pokemedi_jar.zip s3://${{ secrets.S3_BUCKET_NAME }}/
+
+# Deploy
+    - name: Deploy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws deploy create-deployment 
+        --application-name pokemedi
+        --deployment-group-name pokemedi-group
+        --file-exists-behavior OVERWRITE 
+        --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=pokemedi_jar.zip
+        --region ap-northeast-2
+    
+      
