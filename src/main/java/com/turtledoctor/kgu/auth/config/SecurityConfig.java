@@ -36,7 +36,6 @@ public class SecurityConfig {
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 

@@ -56,7 +56,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         계속해서 갱신해야하는 accessToken 특성상 setHeader 사용.
          */
         response.setHeader("access", access);
-//        response.addCookie(createCookie("refresh", refresh));
+//        response.addCookie(createCookie("refresh", refresh)); //addCookie대신 addHeader 사용하였음.
         response.setStatus(HttpStatus.OK.value());
         response.addHeader("Set-Cookie",createCookie("refresh", refresh).toString());
 //        response.addHeader("QWWWW",token);

@@ -22,9 +22,8 @@ public class JWTUtil {
     public String createJwt(String category, Long kakaoId, String role, Long expiredMs) { // name, email 제거
 
         return Jwts.builder()
+                .claim("category", category)
                 .claim("kakaoId", kakaoId)
-//                .claim("name", name)
-//                .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
@@ -41,20 +40,14 @@ public class JWTUtil {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
-//    public String getEmail(String token) { // 추가
-//
-//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
-//    }
-
-
-//    public String getName(String token) { // 추가
-//
-//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("name", String.class);
-//    }
 
     public Boolean isExpired(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+    }
+
+    public String getCategory(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
 }
