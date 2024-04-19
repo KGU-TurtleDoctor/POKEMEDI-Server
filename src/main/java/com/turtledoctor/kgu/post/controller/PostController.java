@@ -1,6 +1,10 @@
 package com.turtledoctor.kgu.post.controller;
 
-import com.turtledoctor.kgu.post.DTO.*;
+import com.turtledoctor.kgu.post.dto.request.CreatePostRequest;
+import com.turtledoctor.kgu.post.dto.request.DeletePostRequest;
+import com.turtledoctor.kgu.post.dto.request.SearchPostRequest;
+import com.turtledoctor.kgu.post.dto.request.UpdatePostRequest;
+import com.turtledoctor.kgu.post.dto.response.PostResponse;
 import com.turtledoctor.kgu.post.service.PostService;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,35 +25,29 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDTO> createPost(@RequestBody CreatePostRequestDTO createPostRequestDTO) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("header1", "header");
+    public ResponseEntity<ResponseDTO> createPost(@RequestBody CreatePostRequest createPostRequestDTO) {
 
-        ResponseDTO responseDTO = ResponseDTO
-                .builder()
+        ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
                 .result(postService.createPost(createPostRequestDTO))
                 .build();
-        return ResponseEntity.ok().headers(headers).body(responseDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseDTO> updatePost(@RequestBody UpdatePostRequestDTO updatePostRequestDTO) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("header1", "header");
+    public ResponseEntity<ResponseDTO> updatePost(@RequestBody UpdatePostRequest updatePostRequestDTO) {
 
-        ResponseDTO responseDTO = ResponseDTO
-                .builder()
+        ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
                 .result(postService.updatePost(updatePostRequestDTO))
                 .build();
-        return ResponseEntity.ok().headers(headers).body(responseDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDTO> deletePost(@RequestBody DeletePostRequestDTO deletePostRequestDTO) {
+    public ResponseEntity<ResponseDTO> deletePost(@RequestBody DeletePostRequest deletePostRequestDTO) {
 
         postService.deletePost(deletePostRequestDTO);
         return ResponseEntity.ok().build();
@@ -57,7 +55,7 @@ public class PostController {
 
     @GetMapping("/list")
     public ResponseEntity<ResponseDTO> getPostList() {
-        List<PostListDTO> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
+        List<PostResponse> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
@@ -69,9 +67,9 @@ public class PostController {
 
     @GetMapping("/search")
     public ResponseEntity<ResponseDTO> searchPostList(@RequestParam(value = "keyword") String keyword) {
-        PostSearchRequestDTO postSearchRequestDTO = new PostSearchRequestDTO();
+        SearchPostRequest postSearchRequestDTO = new SearchPostRequest();
         postSearchRequestDTO.setKeyword(keyword);
-        List<PostListDTO> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
+        List<PostResponse> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)

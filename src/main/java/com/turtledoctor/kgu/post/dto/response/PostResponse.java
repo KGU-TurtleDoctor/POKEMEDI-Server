@@ -1,4 +1,4 @@
-package com.turtledoctor.kgu.post.DTO;
+package com.turtledoctor.kgu.post.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class PostListDTO {
+public class PostResponse {
     Long id;
     String title;
     String content;
