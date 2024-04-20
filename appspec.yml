@@ -17,7 +17,9 @@ hooks:
     - location: deploy.sh
       timeout: 60
       runas: ubuntu
-      command : sudo chmod +x deploy.sh sudo chmod +x /home/ubuntu/app/deploy.sh
+      command : |
+      sudo chmod +x deploy.sh 
+      sudo chmod +x /home/ubuntu/app/deploy.sh
 
   ApplicationStart:
     - location: deploy.sh
