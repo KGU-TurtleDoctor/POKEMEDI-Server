@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# 빌드된 JAR 파일이 생성될 디렉토리 설정
-REPOSITORY=/POKEMEDI-Server/build/libs
+# 빌드된 JAR 파일이 있는 디렉토리로 이동
+cd /POKEMEDI-Server/build/libs || exit
 
 echo "> 현재 구동 중인 애플리케이션 pid 확인"
 
@@ -20,7 +20,7 @@ fi
 echo "> 새 애플리케이션 배포"
 
 # 빌드된 JAR 파일 중 가장 최신 파일 선택
-JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+JAR_NAME=$(ls -tr *.jar | tail -n 1)
 
 echo "> JAR NAME: $JAR_NAME"
 
@@ -31,5 +31,4 @@ chmod +x $JAR_NAME
 echo "> $JAR_NAME 실행"
 
 # nohup을 통해 JAR 파일 실행
-nohup java -jar -Duser.timezone=Asia/Seoul $JAR_NAME >> $REPOSITORY/nohup.out 2>&1 &
-2>&1 &
+nohup java -jar -Duser.timezone=Asia/Seoul $JAR_NAME >> /POKEMEDI-Server/nohup.out 2>&1 &
