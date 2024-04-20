@@ -61,21 +61,16 @@ jobs:
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      working-directory: ./POKEMEDI-Server
     
     - name: Build with Gradle
-      run: ./gradlew clean build
-      working-directory: ./POKEMEDI-Server
 
       # 디렉토리 생성
     - name: Make Directory
       run: mkdir -p deploy
-      working-directory: ./home/ubuntu
         
     # Jar 파일 복사
     - name: Copy Jar
       run: cp ./build/libs/*.jar ./deploy
-      working-directory: ./POKEMEDI-Server
 
     - name: Make zip file
       run: zip -r ./pokemedi_jar.zip ./deploy
