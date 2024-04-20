@@ -10,42 +10,6 @@ env:
   #S3
   S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }},
   
-  #registration
-  spring.security.oauth2.client.registration.kakao.client-name : ${{ secrets.CLIENT_NAME }}
-  spring.security.oauth2.client.registration.kakao.client-id : ${{ secrets.CLIENT_ID }}
-  spring.security.oauth2.client.registration.kakao.client-secret : ${{ secrets.CLIENT_SECRET }}
-  spring.security.oauth2.client.registration.kakao.redirect-uri : ${{ secrets.REDIRECT_URI }}
-  spring.security.oauth2.client.registration.kakao.authorization-grant-type : authorization_code
-  spring.security.oauth2.client.registration.kakao.scope : ${{ secrets.SCOPE }}
-  spring.security.oauth2.client.registration.kakao.client-authentication-method : ${{ secrets.CLIENT_AUTHENTICATION_METHOD }}
-  
-  #provider
-  spring.security.oauth2.client.provider.kakao.authorization-uri : https://kauth.kakao.com/oauth/authorize
-  spring.security.oauth2.client.provider.kakao.token-uri : https://kauth.kakao.com/oauth/token
-  spring.security.oauth2.client.provider.kakao.user-info-uri : https://kapi.kakao.com/v2/user/me
-  spring.security.oauth2.client.provider.kakao.user-name-attribute : ${{ secrets.USER_NAME_ATTRIBUTE }}
-  
-  #database
-  spring.datasource.driver-class-name : ${{ secrets.DRIVER_CLASS_NAME }}
-  spring.datasource.url : ${{ secrets.DATASOURCE_URL }}
-  spring.datasource.username : ${{ secrets.DATASOURCE_USERNAME }}
-  spring.datasource.password : ${{ secrets.DATASOURCE_PASSWORD }}
-  spring.jpa.properties.hibernate.dialect : org.hibernate.dialect.MySQLDialect
-  spring.jpa.hibernate.ddl-auto : none
-  spring.jpa.hibernate.naming.physical-strategy : org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-  
-  #JWT
-  spring.jwt.secret : ${{ secrets.JWT_SECRET }}
-  
-  #URL
-  redirectURL : ${{ secrets.REDIRECT_URI }}
-  corsURL : ${{ secrets.CORSURL }}
-  
-  #openapi
-  openai.api_key : ${{ secrets.OPENAI_API_KEY }}
-  openai.model : ${{ secrets.OPENAI_MODEL }}
-  openai.url : ${{ secrets.OPENAI_URL }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -95,6 +59,42 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        #registration
+        spring.security.oauth2.client.registration.kakao.client-name : ${{ secrets.CLIENT_NAME }}
+        spring.security.oauth2.client.registration.kakao.client-id : ${{ secrets.CLIENT_ID }}
+        spring.security.oauth2.client.registration.kakao.client-secret : ${{ secrets.CLIENT_SECRET }}
+        spring.security.oauth2.client.registration.kakao.redirect-uri : ${{ secrets.REDIRECT_URI }}
+        spring.security.oauth2.client.registration.kakao.authorization-grant-type : authorization_code
+        spring.security.oauth2.client.registration.kakao.scope : ${{ secrets.SCOPE }}
+        spring.security.oauth2.client.registration.kakao.client-authentication-method : ${{ secrets.CLIENT_AUTHENTICATION_METHOD }}
+        
+        #provider
+        spring.security.oauth2.client.provider.kakao.authorization-uri : https://kauth.kakao.com/oauth/authorize
+        spring.security.oauth2.client.provider.kakao.token-uri : https://kauth.kakao.com/oauth/token
+        spring.security.oauth2.client.provider.kakao.user-info-uri : https://kapi.kakao.com/v2/user/me
+        spring.security.oauth2.client.provider.kakao.user-name-attribute : ${{ secrets.USER_NAME_ATTRIBUTE }}
+        
+        #database
+        spring.datasource.driver-class-name : ${{ secrets.DRIVER_CLASS_NAME }}
+        spring.datasource.url : ${{ secrets.DATASOURCE_URL }}
+        spring.datasource.username : ${{ secrets.DATASOURCE_USERNAME }}
+        spring.datasource.password : ${{ secrets.DATASOURCE_PASSWORD }}
+        spring.jpa.properties.hibernate.dialect : org.hibernate.dialect.MySQLDialect
+        spring.jpa.hibernate.ddl-auto : none
+        spring.jpa.hibernate.naming.physical-strategy : org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        
+        #JWT
+        spring.jwt.secret : ${{ secrets.JWT_SECRET }}
+        
+        #URL
+        redirectURL : ${{ secrets.REDIRECT_URI }}
+        corsURL : ${{ secrets.CORSURL }}
+        
+        #openapi
+        openai.api_key : ${{ secrets.OPENAI_API_KEY }}
+        openai.model : ${{ secrets.OPENAI_MODEL }}
+        openai.url : ${{ secrets.OPENAI_URL }}
+
       run: 
         aws deploy create-deployment 
         --application-name pokemedi
