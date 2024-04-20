@@ -7,7 +7,7 @@ echo "> 현재 시간: $(date)" >> /home/ubuntu/app/log/deploy.log
 echo "> build 파일명: $JAR_NAME" >> /home/ubuntu/app/log/deploy.log
 
 echo "> build 파일 복사" >> /home/ubuntu/app/log/deploy.log
-DEPLOY_PATH=/home/ubuntu/app/deploy
+DEPLOY_PATH=/home/ubuntu/app/deploy/
 cp $BUILD_JAR $DEPLOY_PATH
 
 echo "> 현재 실행중인 애플리케이션 pid 확인" >> /home/ubuntu/app/log/deploy.log
