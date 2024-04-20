@@ -7,7 +7,44 @@ on:
     branches: [ main ]
 
 env:
-  S3_BUCKET_NAME: pokemedi-server-deploy
+  #S3
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }},
+  
+  #registration
+  spring.security.oauth2.client.registration.kakao.client-name : ${{CLIENT_NAME}}
+  spring.security.oauth2.client.registration.kakao.client-id : ${{CLIENT_ID}}
+  spring.security.oauth2.client.registration.kakao.client-secret : ${{CLIENT_SECRET}}
+  spring.security.oauth2.client.registration.kakao.redirect-uri : ${{REDIRECT_URI}}
+  spring.security.oauth2.client.registration.kakao.authorization-grant-type : authorization_code
+  spring.security.oauth2.client.registration.kakao.scope : ${{SCOPE}}
+  spring.security.oauth2.client.registration.kakao.client-authentication-method : ${{CLIENT_AUTHENTICATION_METHOD}}
+  
+  #provider
+  spring.security.oauth2.client.provider.kakao.authorization-uri : https://kauth.kakao.com/oauth/authorize
+  spring.security.oauth2.client.provider.kakao.token-uri : https://kauth.kakao.com/oauth/token
+  spring.security.oauth2.client.provider.kakao.user-info-uri : https://kapi.kakao.com/v2/user/me
+  spring.security.oauth2.client.provider.kakao.user-name-attribute : ${{USER_NAME_ATTRIBUTE}}
+  
+  #database
+  spring.datasource.driver-class-name : ${{DRIVER_CLASS_NAME}}
+  spring.datasource.url : ${{DATASOURCE_URL}}
+  spring.datasource.username : ${{DATASOURCE_USERNAME}}
+  spring.datasource.password : ${{DATASOURCE_PASSWORD}}
+  spring.jpa.properties.hibernate.dialect : org.hibernate.dialect.MySQLDialect
+  spring.jpa.hibernate.ddl-auto : none
+  spring.jpa.hibernate.naming.physical-strategy : org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  
+  #JWT
+  spring.jwt.secret : ${{JWT_SECRET}}
+  
+  #URL
+  redirectURL : ${{REDIRECT_URI}}
+  corsURL : ${{CORSURL}}
+  
+  #openapi
+  openai.api_key : ${{OPENAI_API_KEY}}
+  openai.model : ${{OPENAI_MODEL}}
+  openai.url : ${{OPENAI_URL}}
 
 jobs:
   build:
@@ -24,17 +61,21 @@ jobs:
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+      working-directory: ./POKEMEDI-Server
     
     - name: Build with Gradle
       run: ./gradlew clean build
+      working-directory: ./POKEMEDI-Server
 
       # 디렉토리 생성
     - name: Make Directory
       run: mkdir -p deploy
+      working-directory: ./home/ubuntu
         
     # Jar 파일 복사
     - name: Copy Jar
       run: cp ./build/libs/*.jar ./deploy
+      working-directory: ./POKEMEDI-Server
 
     - name: Make zip file
       run: zip -r ./pokemedi_jar.zip ./deploy
