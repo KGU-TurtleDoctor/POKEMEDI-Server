@@ -14,7 +14,7 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: /home/ubuntu/app
+    - location: 
       timeout: 60
       runas: ubuntu
       command : sudo chmod +x deploy.sh
