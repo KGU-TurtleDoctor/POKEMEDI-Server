@@ -19,10 +19,10 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'adopt'
+        distribution: 'temurin'
 
     - name: Generate application.properties
-      run: 
+      run: |
         mkdir -p src/main/resources
         cat <<EOF > src/main/resources/application.properties
         spring.security.oauth2.client.registration.kakao.client-name=${{ secrets.CLIENT_NAME }}
