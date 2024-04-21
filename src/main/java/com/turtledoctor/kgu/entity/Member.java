@@ -37,6 +37,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> postList;
 
+    @OneToMany(mappedBy = "postLike", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikeList;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
 

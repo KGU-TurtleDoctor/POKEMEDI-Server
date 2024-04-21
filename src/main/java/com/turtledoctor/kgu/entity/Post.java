@@ -34,6 +34,9 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Long comments;
 
+    @OneToMany(mappedBy = "postLike", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikeList;
+
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
 
