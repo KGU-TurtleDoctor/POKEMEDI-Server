@@ -2,13 +2,13 @@ package com.turtledoctor.kgu.reply.service;
 
 import com.nimbusds.jwt.JWT;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
+import com.turtledoctor.kgu.comment.repository.CommentRepository;
 import com.turtledoctor.kgu.entity.Comment;
 import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.entity.Reply;
-import com.turtledoctor.kgu.reply.Temp.TempCommentRepository;
-import com.turtledoctor.kgu.reply.Temp.TempMemberRepsitory;
-import com.turtledoctor.kgu.reply.Temp.TempPostRepository;
+import com.turtledoctor.kgu.entity.repository.MemberRepository;
+import com.turtledoctor.kgu.post.repository.PostRepository;
 import com.turtledoctor.kgu.reply.dto.CreateReplyDTO;
 import com.turtledoctor.kgu.reply.dto.DeleteReplyDTO;
 import com.turtledoctor.kgu.reply.dto.UpdateReplyDTO;
@@ -27,9 +27,9 @@ import java.util.Optional;
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
-    private final TempMemberRepsitory memberRepository;
-    private final TempCommentRepository commentRepository;
-    private final TempPostRepository postRepository;
+    private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
     @Value("${spring.jwt.secret}")
     private String secret;
 
@@ -40,7 +40,7 @@ public class ReplyService {
         String kakaoId = jwtUtil.getkakaoId(createReplyDTO.getAuthorization());
         Post post;
         Comment comment;
-        Member member = memberRepository.findMemberByKakaoId(kakaoId);
+        Member member = memberRepository.findBykakaoId(kakaoId);
         if(member == null) throw new Exception("없는 회원입니다.");
         {
             Optional<Comment> optionalComment = commentRepository.findById(createReplyDTO.getCommentId());
@@ -79,7 +79,7 @@ public class ReplyService {
         String kakaoId = jwtUtil.getkakaoId(updateReplyDTO.getAuthorization());
 
         Reply reply;
-        Member member = memberRepository.findMemberByKakaoId(kakaoId);
+        Member member = memberRepository.findBykakaoId(kakaoId);
 
         if(member == null) throw new Exception("없는 회원입니다.");
 

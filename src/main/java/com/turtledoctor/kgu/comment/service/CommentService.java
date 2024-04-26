@@ -1,7 +1,6 @@
 package com.turtledoctor.kgu.comment.service;
 
 
-import com.nimbusds.jwt.JWT;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.comment.DTO.Request.CreateCommentRequest;
 import com.turtledoctor.kgu.comment.DTO.Request.DeleteCommentRequest;
@@ -9,14 +8,14 @@ import com.turtledoctor.kgu.comment.DTO.Request.FindCommentsByPostRequest;
 import com.turtledoctor.kgu.comment.DTO.Request.UpdateCommentRequest;
 import com.turtledoctor.kgu.comment.DTO.Response.FindCommentsByPostResponse;
 import com.turtledoctor.kgu.comment.DTO.Response.FindRepliesByCommentResponse;
-import com.turtledoctor.kgu.comment.Temp.TempMemberRepository;
-import com.turtledoctor.kgu.comment.Temp.TempPostRepository;
 import com.turtledoctor.kgu.comment.repository.CommentRepository;
 import com.turtledoctor.kgu.converter.DateConverter;
 import com.turtledoctor.kgu.entity.Comment;
 import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.entity.Reply;
+import com.turtledoctor.kgu.entity.repository.MemberRepository;
+import com.turtledoctor.kgu.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,8 +34,8 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final TempPostRepository postRepository;
-    private final TempMemberRepository memberRepository;
+    private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
     @Value("${spring.jwt.secret}")
     String secret;
@@ -48,7 +47,7 @@ public class CommentService {
         String kakaoId = jwtUtil.getkakaoId(createCommentRequest.getAuthorization());
 
 
-        Member member = memberRepository.findByKakaoId(kakaoId);
+        Member member = memberRepository.findBykakaoId(kakaoId);
         if(member == null){
             throw new Exception("없는 유저입니다.");
         }
