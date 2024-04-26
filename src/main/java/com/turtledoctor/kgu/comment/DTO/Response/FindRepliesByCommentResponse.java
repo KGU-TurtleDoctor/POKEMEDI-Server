@@ -11,7 +11,7 @@ public class FindRepliesByCommentResponse {
     private Long replyId;
     private String body;
     private String time;
-
+    private Boolean isWriter;
     private String nickName;
 
 }

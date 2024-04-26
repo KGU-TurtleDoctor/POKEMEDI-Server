@@ -1,6 +1,8 @@
 package com.turtledoctor.kgu.comment.service;
 
 
+import com.nimbusds.jwt.JWT;
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.comment.DTO.Request.CreateCommentRequest;
 import com.turtledoctor.kgu.comment.DTO.Request.DeleteCommentRequest;
 import com.turtledoctor.kgu.comment.DTO.Request.FindCommentsByPostRequest;
@@ -17,6 +19,7 @@ import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.entity.Reply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +38,14 @@ public class CommentService {
     private final TempPostRepository postRepository;
     private final TempMemberRepository memberRepository;
 
+    @Value("${spring.jwt.secret}")
+    String secret;
+
     @Transactional
-    public Long createComment(CreateCommentRequest createCommentRequest, String authorization) throws Exception{
+    public Long createComment(CreateCommentRequest createCommentRequest) throws Exception{
         //Authorization 변환 과정 추가 예정
-        Long kakaoId = 1L;
+        JWTUtil jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(createCommentRequest.getAuthorization());
 
 
         Member member = memberRepository.findByKakaoId(kakaoId);
@@ -65,9 +72,10 @@ public class CommentService {
     }
 
     @Transactional
-    public Long updateComment(UpdateCommentRequest updateCommentRequest, String authorization, Long postId) throws Exception {
+    public Long updateComment(UpdateCommentRequest updateCommentRequest) throws Exception {
+        JWTUtil jwtUtil = new JWTUtil(secret);
         //Authorization 변환 과정 추가 예정
-        Long kakaoId = 2L;
+        String kakaoId = jwtUtil.getkakaoId(updateCommentRequest.getAuthorization()) ;
 
         Optional<Post> optionalPost = postRepository.findById(updateCommentRequest.getPostId());
 
@@ -87,7 +95,7 @@ public class CommentService {
             log.info("real User : "+ comment.getMember().getKakaoId());
             throw new Exception("사용자 권한이 없습니다.");
         }
-        else if(!comment.getPost().getId().equals(postId)){
+        else if(!comment.getPost().getId().equals(updateCommentRequest.getPostId())){
             throw new Exception("게시글에 없는 댓글입니다.");
         }
         else{
@@ -102,6 +110,9 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<FindCommentsByPostResponse> findCommentByPost(FindCommentsByPostRequest commentsByPostRequest)throws Exception{
+        JWTUtil jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(commentsByPostRequest.getAuthor());
+
         List<FindCommentsByPostResponse> result = new ArrayList<>();
 
         Post post;
@@ -113,7 +124,7 @@ public class CommentService {
         }
 
         List<Comment> comments = post.getCommentList();
-
+        boolean isWriter;
         for(Comment comment : comments){
             LocalDateTime time;
             if(comment.getUpdatedAt()!=null){
@@ -121,14 +132,16 @@ public class CommentService {
             }else{
                 time = comment.getCreatedAt();
             }
+            isWriter = comment.getMember().getKakaoId().equals(kakaoId);
             result.add(
-                FindCommentsByPostResponse.builder()
-                        .commentId(comment.getId())
-                        .nickName(comment.getMember().getNickname())
-                        .body(comment.getBody())
-                        .time(DateConverter.ConverteDate(time))
-                        .replies(findRepliesByComment(comment.getReplyList()))
-                        .build()
+                    FindCommentsByPostResponse.builder()
+                            .commentId(comment.getId())
+                            .nickName(comment.getMember().getName())
+                            .isWriter(isWriter)
+                            .body(comment.getBody())
+                            .time(DateConverter.ConverteDate(time))
+                            .replies(findRepliesByComment(comment.getReplyList(),kakaoId))
+                            .build()
             );
         }
 
@@ -136,11 +149,13 @@ public class CommentService {
     }
 
 
-    private List<FindRepliesByCommentResponse> findRepliesByComment(List<Reply> replies){
+    private List<FindRepliesByCommentResponse> findRepliesByComment(List<Reply> replies, String kakaoId){
         List<FindRepliesByCommentResponse> result = new ArrayList<>();
 
+        boolean isWriter;
         for(Reply reply : replies){
             LocalDateTime time;
+            isWriter = reply.getMember().getKakaoId().equals(kakaoId);
             if(reply.getUpdatedAt()!=null){
                 time = reply.getUpdatedAt();
             }else{
@@ -150,7 +165,8 @@ public class CommentService {
             result.add(FindRepliesByCommentResponse.builder()
                     .replyId(reply.getId())
                     .time(DateConverter.ConverteDate(time))
-                    .nickName(reply.getMember().getNickname())
+                    .isWriter(isWriter)
+                    .nickName(reply.getMember().getName())
                     .body(reply.getBody())
                     .build());
         }

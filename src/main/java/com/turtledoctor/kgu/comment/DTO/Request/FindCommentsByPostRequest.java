@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class FindCommentsByPostRequest {
     Long postId;
+    String author;
 }

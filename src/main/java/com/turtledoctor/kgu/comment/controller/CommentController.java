@@ -25,10 +25,12 @@ public class CommentController {
 
 
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<ResponseDTO> findComments(@PathVariable(name="postId")Long postId){
+    public ResponseEntity<ResponseDTO> findComments(@CookieValue(name = "Authorization", required = false) String author,@PathVariable(name="postId")Long postId){
         ResponseDTO responseDTO;
         FindCommentsByPostRequest findCommentsByPostRequest = new FindCommentsByPostRequest();
         findCommentsByPostRequest.setPostId(postId);
+        findCommentsByPostRequest.setAuthor(author);
+
         Map<String, Object> result = new HashMap<>();
 
 
@@ -52,13 +54,13 @@ public class CommentController {
 
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<ResponseDTO> leaveComment(@PathVariable(name="postId") Long postId,/*@CookieValue(name = "Auth") String cookie,*/ @RequestBody CreateCommentRequest createCommentRequest){
+    public ResponseEntity<ResponseDTO> leaveComment(@CookieValue(name = "Authorization") String author, @PathVariable(name="postId") Long postId, @RequestBody CreateCommentRequest createCommentRequest){
         ResponseDTO responseDTO;
 
         createCommentRequest.setPostId(postId);
-
+        createCommentRequest.setAuthorization(author);
         try{                                                        //Login 기능 완성시 처리.
-            Long id = commentService.createComment(createCommentRequest,"");
+            Long id = commentService.createComment(createCommentRequest);
             CreateCommentResponse createCommentResponse = CreateCommentResponse.builder().commentId(id).build();
             responseDTO = ResponseDTO.builder()
                     .isSuccess(true).stateCode(200).result(createCommentResponse).build();
@@ -74,14 +76,15 @@ public class CommentController {
 
 
     @PutMapping("/posts/{postid}/comments/{commentid}")
-    public ResponseEntity<ResponseDTO> updateComments(@PathVariable(name="postid") Long postId, @PathVariable(name="commentid") Long commentId, @RequestBody UpdateCommentRequest updateCommentRequest){
+    public ResponseEntity<ResponseDTO> updateComments(@CookieValue(name = "Authorization") String author, @PathVariable(name="postid") Long postId, @PathVariable(name="commentid") Long commentId, @RequestBody UpdateCommentRequest updateCommentRequest){
         updateCommentRequest.setCommentId(commentId);
         updateCommentRequest.setPostId(postId);
+        updateCommentRequest.setAuthorization(author);
         ResponseDTO responseDTO;
         Map<String, Object> result = new HashMap<>();
 
         try{
-            result.put("id",commentService.updateComment(updateCommentRequest, "", postId));
+            result.put("id",commentService.updateComment(updateCommentRequest));
             responseDTO = ResponseDTO.builder()
                     .isSuccess(true)
                     .stateCode(200)

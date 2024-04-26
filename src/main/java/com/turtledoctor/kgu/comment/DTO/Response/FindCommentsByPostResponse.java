@@ -14,5 +14,6 @@ public class FindCommentsByPostResponse {
     private String nickName;
     private String body;
     private String time;
+    private Boolean isWriter;
     private List<FindRepliesByCommentResponse> replies;
 }
