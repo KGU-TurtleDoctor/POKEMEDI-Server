@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.reply.controller;
 
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.entity.Reply;
 import com.turtledoctor.kgu.reply.ErrorMessage;
 import com.turtledoctor.kgu.reply.dto.CreateReplyDTO;
@@ -11,6 +12,7 @@ import com.turtledoctor.kgu.reply.dto.response.CreateReplyResponse;
 import com.turtledoctor.kgu.reply.service.ReplyService;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +25,12 @@ public class ReplyController {
 
     private final ReplyService replyService;
 
+
     @PostMapping("/posts/{postId}/comments/{commentId}/replies")
-    public ResponseEntity<ResponseDTO> leaveReply(@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId, @RequestBody CreateReplyRequest createReplyRequest){
+    public ResponseEntity<ResponseDTO> leaveReply(@CookieValue(name = "Authorization") String author,@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId, @RequestBody CreateReplyRequest createReplyRequest){
+
         CreateReplyDTO createReplyDTO = CreateReplyDTO.builder()
-                .authorization("")
+                .authorization(author)
                 .postId(postId)
                 .commentId(commentId)
                 .body(createReplyRequest.getBody())
@@ -51,9 +55,9 @@ public class ReplyController {
     }
 
     @PutMapping("/posts/{postId}/comments/{commentId}/replies/{replyId}")
-    public ResponseEntity<ResponseDTO> updateReply(@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,@PathVariable(name = "replyId") Long replyId, @RequestBody UpdateReplyRequest updateReplyRequest){
+    public ResponseEntity<ResponseDTO> updateReply(@CookieValue(name = "Authorization") String author,@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,@PathVariable(name = "replyId") Long replyId, @RequestBody UpdateReplyRequest updateReplyRequest){
         UpdateReplyDTO updateReplyDTO = UpdateReplyDTO.builder()
-                .authorization("")
+                .authorization(author)
                 .postId(postId)
                 .commentId(commentId)
                 .replyId(replyId)
@@ -82,9 +86,9 @@ public class ReplyController {
     }
 
     @DeleteMapping("/posts/{postId}/comments/{commentId}/replies/{replyId}")
-    public ResponseEntity<ResponseDTO> deleteReply(@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,@PathVariable(name = "replyId") Long replyId, @RequestBody UpdateReplyRequest updateReplyRequest){
+    public ResponseEntity<ResponseDTO> deleteReply(@CookieValue(name = "Authorization") String author,@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,@PathVariable(name = "replyId") Long replyId, @RequestBody UpdateReplyRequest updateReplyRequest){
         DeleteReplyDTO deleteReplyDTO = DeleteReplyDTO.builder()
-                .authorization("")
+                .authorization(author)
                 .postId(postId)
                 .commentId(commentId)
                 .replyId(replyId).build();

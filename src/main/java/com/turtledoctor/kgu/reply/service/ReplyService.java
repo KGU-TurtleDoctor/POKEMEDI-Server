@@ -1,5 +1,7 @@
 package com.turtledoctor.kgu.reply.service;
 
+import com.nimbusds.jwt.JWT;
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.entity.Comment;
 import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
@@ -13,6 +15,7 @@ import com.turtledoctor.kgu.reply.dto.UpdateReplyDTO;
 import com.turtledoctor.kgu.reply.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +30,14 @@ public class ReplyService {
     private final TempMemberRepsitory memberRepository;
     private final TempCommentRepository commentRepository;
     private final TempPostRepository postRepository;
+    @Value("${spring.jwt.secret}")
+    private String secret;
 
     @Transactional
     public Long createReply(CreateReplyDTO createReplyDTO) throws Exception{
+        JWTUtil jwtUtil = new JWTUtil(secret);
 
-        //이후 kakao Id 획득 로직으로 변환
-        Long kakaoId = 1L;
+        String kakaoId = jwtUtil.getkakaoId(createReplyDTO.getAuthorization());
         Post post;
         Comment comment;
         Member member = memberRepository.findMemberByKakaoId(kakaoId);
@@ -68,8 +73,11 @@ public class ReplyService {
 
     @Transactional
     public Long updateReply(UpdateReplyDTO updateReplyDTO) throws Exception{
-        //이후 kakao Id 획득 로직으로 변환
-        Long kakaoId = 1L;
+        JWTUtil jwtUtil = new JWTUtil(secret);
+
+
+        String kakaoId = jwtUtil.getkakaoId(updateReplyDTO.getAuthorization());
+
         Reply reply;
         Member member = memberRepository.findMemberByKakaoId(kakaoId);
 
@@ -93,8 +101,8 @@ public class ReplyService {
 
     @Transactional
     public void deleteReply(DeleteReplyDTO deleteReplyDTO) throws Exception{
-        //이후 kakao Id 획득 로직으로 변환
-        Long kakaoId = 1L;
+        JWTUtil jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(deleteReplyDTO.getAuthorization());
 
         Post post;
         Reply reply;
