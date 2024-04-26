@@ -1,10 +1,13 @@
 package com.turtledoctor.kgu.post.service;
 
 import com.turtledoctor.kgu.converter.DateConverter;
+import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
+import com.turtledoctor.kgu.entity.PostLike;
 import com.turtledoctor.kgu.post.dto.request.*;
 import com.turtledoctor.kgu.post.dto.response.PostDetailResponse;
 import com.turtledoctor.kgu.post.dto.response.PostListResponse;
+import com.turtledoctor.kgu.post.repository.PostLikeRepository;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
     private final TempMemberRepository tempMemberRepository;
 
     @Transactional
@@ -95,16 +99,14 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostDetailResponse createPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO) {
         Post post = postRepository.findById(getPostDetailRequestDTO.getPostId()).get();
-        boolean isWriter;
-        boolean isLiked = false; //PostLike 엔티티를 받아오고 작성 예정
-        if(getPostDetailRequestDTO.getKakaoId() == post.getMember().getKakaoId()) isWriter = true;
-        else isWriter = false;
-        //if(post) - PostLike 엔티티를 받아오고 작성 예정
+        Member member =tempMemberRepository.findByKakaoId(getPostDetailRequestDTO.getKakaoId());
+        boolean isWriter = (getPostDetailRequestDTO.getKakaoId() == post.getMember().getKakaoId());
+        boolean isLiked = postLikeRepository.existsByPostAndMember(post, member);
 
         PostDetailResponse dto = PostDetailResponse.builder()
                 .title(post.getTitle())
                 .content(post.getBody())
-                .nickname(post.getMember().getNickname())
+                .nickname(post.getMember().getName())
                 .date(DateConverter.ConverteDate(post.getCreatedAt()))
                 .likes(post.getLikes())
                 .comments(post.getComments())
