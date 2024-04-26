@@ -1,0 +1,23 @@
+[33mcommit 5666af151ff51d4331e2c8bf8710ecb465d56474[m[33m ([m[1;36mHEAD -> [m[1;32missue/5-openAiApi[m[33m, [m[1;31morigin/issue/5-openAiApi[m[33m, [m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m
+Author: Jaehyun Lee <122192096+ReadMyMemory@users.noreply.github.com>
+Date:   Sat Mar 2 17:09:03 2024 +0900
+
+    Create issue_template.md
+
+[33mcommit aece2abc945c538e445515703681a90ba7f183c5[m
+Author: Jaehyun Lee <122192096+ReadMyMemory@users.noreply.github.com>
+Date:   Sat Mar 2 17:08:29 2024 +0900
+
+    Create pull_request_template.md
+
+[33mcommit 134c6d914802e91afd0db22607c8f3461269460a[m[33m ([m[1;32mmain[m[33m)[m
+Author: programofktw <thkim000317@naver.com>
+Date:   Sun Feb 25 14:55:02 2024 +0900
+
+    start spring
+
+[33mcommit c94c93fa8fa320491e1e6b24cbcecc5b28ee519b[m
+Author: Kimteawan <100819044+programofktw@users.noreply.github.com>
+Date:   Sun Feb 25 14:44:35 2024 +0900
+
+    Initial commit
