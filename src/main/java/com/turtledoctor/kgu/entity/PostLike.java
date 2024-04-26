@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Reply extends BaseEntity {
+public class PostLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,14 +20,6 @@ public class Reply extends BaseEntity {
     private Member member;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String body;
-
-    public void updateReply(String body){
-        this.body = body;
-    }
-
+    @JoinColumn(name = "post_id")
+    private Post post;
 }

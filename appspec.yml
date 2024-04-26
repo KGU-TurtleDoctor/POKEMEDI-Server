@@ -1,0 +1,25 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/app
+    overwrite: yes
+file_exists_behavior: OVERWRITE
+
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  AfterInstall:
+    - location: deploy.sh
+      timeout: 60
+      runas: ubuntu
+      command : sudo chmod +x deploy.sh
+
+  ApplicationStart:
+    - location: deploy.sh
+      timeout: 60
+      runas: ubuntu
