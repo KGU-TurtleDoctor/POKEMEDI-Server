@@ -9,5 +9,4 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DeletePostRequest {
     Long postId;
-    Long kakaoId;
 }

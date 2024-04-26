@@ -1,11 +1,10 @@
 package com.turtledoctor.kgu.post.service;
 
+import com.turtledoctor.kgu.converter.DateConverter;
 import com.turtledoctor.kgu.entity.Post;
-import com.turtledoctor.kgu.post.dto.request.CreatePostRequest;
-import com.turtledoctor.kgu.post.dto.request.DeletePostRequest;
-import com.turtledoctor.kgu.post.dto.request.SearchPostRequest;
-import com.turtledoctor.kgu.post.dto.request.UpdatePostRequest;
-import com.turtledoctor.kgu.post.dto.response.PostResponse;
+import com.turtledoctor.kgu.post.dto.request.*;
+import com.turtledoctor.kgu.post.dto.response.PostDetailResponse;
+import com.turtledoctor.kgu.post.dto.response.PostListResponse;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,12 +56,12 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> createPostListDTO() {
+    public List<PostListResponse> createPostListDTO() {
         List<Post> rawPostList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
-        List<PostResponse> postList = new ArrayList<>();
+        List<PostListResponse> postList = new ArrayList<>();
 
         for(Post post : rawPostList) {
-            PostResponse dto = PostResponse.builder()
+            PostListResponse dto = PostListResponse.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
@@ -75,13 +74,13 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> createSearchedPostListDTO(SearchPostRequest postSearchRequestDTO) {
+    public List<PostListResponse> createSearchedPostListDTO(SearchPostRequest postSearchRequestDTO) {
         String keyword = postSearchRequestDTO.getKeyword();
         List<Post> rawSearchedPostList = postRepository.findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(keyword, keyword);
-        List<PostResponse> postList = new ArrayList<>();
+        List<PostListResponse> postList = new ArrayList<>();
 
         for(Post post : rawSearchedPostList) {
-            PostResponse dto = PostResponse.builder()
+            PostListResponse dto = PostListResponse.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
@@ -91,5 +90,27 @@ public class PostService {
             postList.add(dto);
         }
         return postList;
+    }
+
+    @Transactional(readOnly = true)
+    public PostDetailResponse createPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO) {
+        Post post = postRepository.findById(getPostDetailRequestDTO.getPostId()).get();
+        boolean isWriter;
+        boolean isLiked = false; //PostLike 엔티티를 받아오고 작성 예정
+        if(getPostDetailRequestDTO.getKakaoId() == post.getMember().getKakaoId()) isWriter = true;
+        else isWriter = false;
+        //if(post) - PostLike 엔티티를 받아오고 작성 예정
+
+        PostDetailResponse dto = PostDetailResponse.builder()
+                .title(post.getTitle())
+                .content(post.getBody())
+                .nickname(post.getMember().getNickname())
+                .date(DateConverter.ConverteDate(post.getCreatedAt()))
+                .likes(post.getLikes())
+                .comments(post.getComments())
+                .isWriter(isWriter)
+                .isLiked(isLiked)
+                .build();
+        return dto;
     }
 }
