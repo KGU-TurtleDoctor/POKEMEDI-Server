@@ -46,6 +46,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         String token = jwtUtil.createJwt(KakaoId, name, email, role, 60*60*60L);
+        
         response.addHeader("Set-Cookie",createCookie("Authorization", token).toString());
         response.addHeader("QWWWW",token);
         response.sendRedirect(url);

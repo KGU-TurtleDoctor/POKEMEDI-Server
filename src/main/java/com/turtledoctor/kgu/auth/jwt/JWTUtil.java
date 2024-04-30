@@ -2,6 +2,7 @@ package com.turtledoctor.kgu.auth.jwt;
 
 
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JWTUtil {
 
     private SecretKey secretKey;
@@ -20,7 +22,12 @@ public class JWTUtil {
     }
 
     public String createJwt(String kakaoId, String name, String email, String role, Long expiredMs) { // 추가 name, email
-
+        Date now = new Date(System.currentTimeMillis());
+        Date expired = (new Date(System.currentTimeMillis()+expiredMs));
+        long diff = expired.getTime() - now.getTime();
+        log.info("now  time : "+now
+                +"\nexpired time : "+expired
+                +"\ndiff time : "+diff);
         return Jwts.builder()
                 .claim("kakaoId", kakaoId)
                 .claim("name", name)
