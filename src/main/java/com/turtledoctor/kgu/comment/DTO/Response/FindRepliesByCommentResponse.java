@@ -12,6 +12,7 @@ public class FindRepliesByCommentResponse {
     private String body;
     private String time;
     private Boolean isWriter;
+    private Boolean isPostWriter;
     private String nickName;
 
 }

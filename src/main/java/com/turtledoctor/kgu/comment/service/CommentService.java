@@ -124,6 +124,8 @@ public class CommentService {
 
         List<Comment> comments = post.getCommentList();
         boolean isWriter;
+        boolean isPostWriter;
+        String postWriter = post.getMember().getKakaoId();
         for(Comment comment : comments){
             LocalDateTime time;
             if(comment.getUpdatedAt()!=null){
@@ -132,14 +134,16 @@ public class CommentService {
                 time = comment.getCreatedAt();
             }
             isWriter = comment.getMember().getKakaoId().equals(kakaoId);
+            isPostWriter = postWriter.equals(kakaoId);
             result.add(
                     FindCommentsByPostResponse.builder()
                             .commentId(comment.getId())
                             .nickName(comment.getMember().getName())
                             .isWriter(isWriter)
+                            .isPostWriter(isPostWriter)
                             .body(comment.getBody())
                             .time(DateConverter.ConverteDate(time))
-                            .replies(findRepliesByComment(comment.getReplyList(),kakaoId))
+                            .replies(findRepliesByComment(comment.getReplyList(),kakaoId,post))
                             .build()
             );
         }
@@ -148,13 +152,16 @@ public class CommentService {
     }
 
 
-    private List<FindRepliesByCommentResponse> findRepliesByComment(List<Reply> replies, String kakaoId){
+    private List<FindRepliesByCommentResponse> findRepliesByComment(List<Reply> replies, String kakaoId,Post post){
         List<FindRepliesByCommentResponse> result = new ArrayList<>();
 
         boolean isWriter;
+        boolean isPostWriter;
+        String postWriter = post.getMember().getKakaoId();
         for(Reply reply : replies){
             LocalDateTime time;
             isWriter = reply.getMember().getKakaoId().equals(kakaoId);
+            isPostWriter = postWriter.equals(kakaoId);
             if(reply.getUpdatedAt()!=null){
                 time = reply.getUpdatedAt();
             }else{
@@ -165,6 +172,7 @@ public class CommentService {
                     .replyId(reply.getId())
                     .time(DateConverter.ConverteDate(time))
                     .isWriter(isWriter)
+                    .isPostWriter(isPostWriter)
                     .nickName(reply.getMember().getName())
                     .body(reply.getBody())
                     .build());
