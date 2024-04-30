@@ -59,6 +59,10 @@ public class ReplyService {
                 post = optionalPost.get();
             }
         }
+
+        if(!post.getId().equals(comment.getPost().getId())){
+            throw new Exception("요청하신 댓글은 없는 댓글입니다.");
+        }
         Reply reply = Reply.builder()
                 .comment(comment)
                 .body(createReplyDTO.getBody())
