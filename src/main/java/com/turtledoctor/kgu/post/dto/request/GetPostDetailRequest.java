@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class GetPostDetailRequest {
-    String kakaoId;
     Long postId;
 }

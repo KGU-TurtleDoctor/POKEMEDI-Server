@@ -1,16 +1,18 @@
 package com.turtledoctor.kgu.post.service;
 
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.converter.DateConverter;
 import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.entity.PostLike;
+import com.turtledoctor.kgu.entity.repository.MemberRepository;
 import com.turtledoctor.kgu.post.dto.request.*;
 import com.turtledoctor.kgu.post.dto.response.PostDetailResponse;
 import com.turtledoctor.kgu.post.dto.response.PostListResponse;
 import com.turtledoctor.kgu.post.repository.PostLikeRepository;
 import com.turtledoctor.kgu.post.repository.PostRepository;
-import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +27,20 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
-    private final TempMemberRepository tempMemberRepository;
+    private final MemberRepository memberRepository;
+
+    @Value("${spring.jwt.secret}")
+    private String secret;
+
+    private JWTUtil jwtUtil;
 
     @Transactional
-    public Long createPost(CreatePostRequest createPostRequestDTO) {
+    public Long createPost(CreatePostRequest createPostRequestDTO, String author) {
+
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
         Post newPost = postRepository.save(Post.builder()
-                .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId().toString()))
+                .member(memberRepository.findBykakaoId(kakaoId))
                 .title(createPostRequestDTO.getTitle())
                 .body(createPostRequestDTO.getBody())
                 .likes(0L)
@@ -38,6 +48,7 @@ public class PostService {
                 .commentList(new ArrayList<>())
                 .build()
         );
+
         return newPost.getId();
     }
 
@@ -97,10 +108,13 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostDetailResponse createPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO) {
+    public PostDetailResponse createPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO, String author) {
+
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
         Post post = postRepository.findById(getPostDetailRequestDTO.getPostId()).get();
-        Member member =tempMemberRepository.findByKakaoId(getPostDetailRequestDTO.getKakaoId());
-        boolean isWriter = (getPostDetailRequestDTO.getKakaoId() == post.getMember().getKakaoId());
+        Member member =memberRepository.findBykakaoId(kakaoId);
+        boolean isWriter = (post.getMember().getKakaoId().equals(kakaoId));
         boolean isLiked = postLikeRepository.existsByPostAndMember(post, member);
 
         PostDetailResponse dto = PostDetailResponse.builder()

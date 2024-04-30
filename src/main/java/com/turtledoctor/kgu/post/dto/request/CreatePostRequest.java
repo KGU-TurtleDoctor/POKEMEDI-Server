@@ -10,5 +10,4 @@ import lombok.Setter;
 public class CreatePostRequest {
     String title;
     String body;
-    String kakaoId;
 }

@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.post.controller;
 
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.post.dto.request.*;
 import com.turtledoctor.kgu.post.dto.response.PostListResponse;
 import com.turtledoctor.kgu.post.service.PostService;
@@ -21,12 +22,12 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDTO> createPost(@RequestBody CreatePostRequest createPostRequestDTO) {
+    public ResponseEntity<ResponseDTO> createPost(@CookieValue(name = "Authorization") String author, @RequestBody CreatePostRequest createPostRequestDTO) {
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.createPost(createPostRequestDTO))
+                .result(postService.createPost(createPostRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -77,12 +78,12 @@ public class PostController {
     }
 
     @PostMapping("/detail")
-    public ResponseEntity<ResponseDTO> getPostDetail(@RequestBody GetPostDetailRequest getPostDetailRequestDTO) {
+    public ResponseEntity<ResponseDTO> getPostDetail(@CookieValue(name = "Authorization") String author, @RequestBody GetPostDetailRequest getPostDetailRequestDTO) {
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.createPostDetailDTO(getPostDetailRequestDTO))
+                .result(postService.createPostDetailDTO(getPostDetailRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
