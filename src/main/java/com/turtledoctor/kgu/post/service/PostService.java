@@ -113,8 +113,8 @@ public class PostService {
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);
         Post post = postRepository.findById(getPostDetailRequestDTO.getPostId()).get();
-        Member member =memberRepository.findBykakaoId(kakaoId);
-        boolean isWriter = (post.getMember().getKakaoId().equals(kakaoId));
+        Member member = memberRepository.findBykakaoId(kakaoId);
+        boolean isWriter = post.getMember().getKakaoId().equals(kakaoId);
         boolean isLiked = postLikeRepository.existsByPostAndMember(post, member);
 
         PostDetailResponse dto = PostDetailResponse.builder()
