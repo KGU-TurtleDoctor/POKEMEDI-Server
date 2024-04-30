@@ -77,7 +77,7 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/detail/{postId}")
+    @GetMapping("/detail/{postId}")
     public ResponseEntity<ResponseDTO> getPostDetail(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
 
         ResponseDTO responseDTO = ResponseDTO.builder()
