@@ -54,7 +54,7 @@ public class PostController {
                 .stateCode(200)
                 .result(postService.deletePost(deletePostRequestDTO, author))
                 .build();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/list")
