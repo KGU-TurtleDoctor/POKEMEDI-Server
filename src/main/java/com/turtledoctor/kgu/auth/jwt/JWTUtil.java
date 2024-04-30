@@ -22,12 +22,7 @@ public class JWTUtil {
     }
 
     public String createJwt(String kakaoId, String name, String email, String role, Long expiredMs) { // 추가 name, email
-        Date now = new Date(System.currentTimeMillis());
-        Date expired = (new Date(System.currentTimeMillis()+expiredMs));
-        long diff = expired.getTime() - now.getTime();
-        log.info("now  time : "+now
-                +"\nexpired time : "+expired
-                +"\ndiff time : "+diff);
+
         return Jwts.builder()
                 .claim("kakaoId", kakaoId)
                 .claim("name", name)
