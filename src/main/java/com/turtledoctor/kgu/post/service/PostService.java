@@ -63,11 +63,12 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(DeletePostRequest deletePostRequestDTO, String author) {
+    public boolean deletePost(DeletePostRequest deletePostRequestDTO, String author) {
         Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + deletePostRequestDTO.getPostId()));
 
         postRepository.delete(deletePost);
+        return true;
     }
 
     @Transactional(readOnly = true)

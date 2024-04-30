@@ -49,7 +49,11 @@ public class PostController {
         DeletePostRequest deletePostRequestDTO = new DeletePostRequest();
         deletePostRequestDTO.setPostId(postId);
 
-        postService.deletePost(deletePostRequestDTO, author);
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(postService.deletePost(deletePostRequestDTO, author))
+                .build();
         return ResponseEntity.ok().build();
     }
 
