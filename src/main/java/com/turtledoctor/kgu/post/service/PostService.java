@@ -26,7 +26,7 @@ public class PostService {
     @Transactional
     public Long createPost(CreatePostRequest createPostRequestDTO) {
         Post newPost = postRepository.save(Post.builder()
-                .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId()))
+                .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId().toString()))
                 .title(createPostRequestDTO.getTitle())
                 .body(createPostRequestDTO.getBody())
                 .likes(0L)
@@ -65,7 +65,7 @@ public class PostService {
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
-                    .nickname(post.getMember().getNickname())
+                    .nickname(post.getMember().getName())
                     .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
                     .build();
             postList.add(dto);
@@ -84,7 +84,7 @@ public class PostService {
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
-                    .nickname(post.getMember().getNickname())
+                    .nickname(post.getMember().getName())
                     .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
                     .build();
             postList.add(dto);

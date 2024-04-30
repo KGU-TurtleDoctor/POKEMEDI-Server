@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TempMemberRepository extends JpaRepository<Member,Long> {
-    Member findByKakaoId(Long kakaoId);
+    Member findByKakaoId(String kakaoId);
 
-    List<Member> findAllByNickname(String nickname);
+    List<Member> findAllByName(String nickname);
 }

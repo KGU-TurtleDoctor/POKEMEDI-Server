@@ -4,29 +4,31 @@ import com.turtledoctor.kgu.entity.base.BaseEntity;
 import com.turtledoctor.kgu.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.User;
 
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Table(name = "User")
 public class Member extends BaseEntity {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 30)
-    private String nickname;
+    @Column(name = "nickname",nullable = false, length = 30)
+    private String name;
 
     @Column(nullable = false, length = 200)
     private String email;
 
     @Column(nullable = false, length = 100)
-    private Long kakaoId;
+    private String kakaoId;
 
     @Column(name = "role", columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
@@ -34,6 +36,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> postList;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikeList;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
@@ -45,6 +50,6 @@ public class Member extends BaseEntity {
     private List<ChatHistory> chatHistoryList;
 
     public void updateMember(String nickname){
-        this.nickname = nickname;
+        this.name = nickname;
     }
 }
