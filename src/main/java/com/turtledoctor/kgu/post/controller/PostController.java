@@ -33,21 +33,21 @@ public class PostController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseDTO> updatePost(@RequestBody UpdatePostRequest updatePostRequestDTO) {
+    public ResponseEntity<ResponseDTO> updatePost(@CookieValue(name = "Authorization") String author, @RequestBody UpdatePostRequest updatePostRequestDTO) {
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.updatePost(updatePostRequestDTO))
+                .result(postService.updatePost(updatePostRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<ResponseDTO> deletePost(@PathVariable("postId") Long postId) {
+    public ResponseEntity<ResponseDTO> deletePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
         DeletePostRequest deletePostRequestDTO = new DeletePostRequest();
         deletePostRequestDTO.setPostId(postId);
-        postService.deletePost(deletePostRequestDTO);
+        postService.deletePost(deletePostRequestDTO, author);
         return ResponseEntity.ok().build();
     }
 
@@ -79,11 +79,13 @@ public class PostController {
 
     @GetMapping("/detail/{postId}")
     public ResponseEntity<ResponseDTO> getPostDetail(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
+        GetPostDetailRequest getPostDetailRequestDTO = new GetPostDetailRequest();
+        getPostDetailRequestDTO.setPostId(postId);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.createPostDetailDTO(postId, author))
+                .result(postService.getPostDetailDTO(getPostDetailRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }

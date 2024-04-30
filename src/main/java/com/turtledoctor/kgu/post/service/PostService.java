@@ -53,7 +53,7 @@ public class PostService {
     }
 
     @Transactional
-    public Long updatePost(UpdatePostRequest updatePostRequestDTO) {
+    public Long updatePost(UpdatePostRequest updatePostRequestDTO, String author) {
         Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + updatePostRequestDTO.getPostId()));
 
@@ -63,7 +63,7 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(DeletePostRequest deletePostRequestDTO) {
+    public void deletePost(DeletePostRequest deletePostRequestDTO, String author) {
         Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + deletePostRequestDTO.getPostId()));
 
@@ -108,11 +108,11 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostDetailResponse createPostDetailDTO(Long postId, String author) {
+    public PostDetailResponse getPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO, String author) {
 
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);
-        Post post = postRepository.findById(postId).get();
+        Post post = postRepository.findById(getPostDetailRequestDTO.getPostId()).get();
         Member member = memberRepository.findBykakaoId(kakaoId);
         boolean isWriter = post.getMember().getKakaoId().equals(kakaoId);
         boolean isLiked = postLikeRepository.existsByPostAndMember(post, member);
