@@ -77,13 +77,13 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/detail")
-    public ResponseEntity<ResponseDTO> getPostDetail(@CookieValue(name = "Authorization") String author, @RequestBody GetPostDetailRequest getPostDetailRequestDTO) {
+    @PostMapping("/detail/{postId}")
+    public ResponseEntity<ResponseDTO> getPostDetail(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.createPostDetailDTO(getPostDetailRequestDTO, author))
+                .result(postService.createPostDetailDTO(postId, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
