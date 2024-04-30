@@ -125,6 +125,7 @@ public class CommentService {
         List<Comment> comments = post.getCommentList();
         boolean isWriter;
         boolean isPostWriter;
+        String commentWriter;
         String postWriter = post.getMember().getKakaoId();
         for(Comment comment : comments){
             LocalDateTime time;
@@ -133,8 +134,9 @@ public class CommentService {
             }else{
                 time = comment.getCreatedAt();
             }
-            isWriter = comment.getMember().getKakaoId().equals(kakaoId);
-            isPostWriter = postWriter.equals(kakaoId);
+            commentWriter = comment.getMember().getKakaoId();
+            isWriter = commentWriter.equals(kakaoId);
+            isPostWriter = postWriter.equals(commentWriter);
             result.add(
                     FindCommentsByPostResponse.builder()
                             .commentId(comment.getId())
@@ -158,10 +160,12 @@ public class CommentService {
         boolean isWriter;
         boolean isPostWriter;
         String postWriter = post.getMember().getKakaoId();
+        String replyWriter;
         for(Reply reply : replies){
             LocalDateTime time;
-            isWriter = reply.getMember().getKakaoId().equals(kakaoId);
-            isPostWriter = postWriter.equals(kakaoId);
+            replyWriter = reply.getMember().getKakaoId();
+            isWriter = replyWriter.equals(kakaoId);
+            isPostWriter = postWriter.equals(replyWriter);
             if(reply.getUpdatedAt()!=null){
                 time = reply.getUpdatedAt();
             }else{
