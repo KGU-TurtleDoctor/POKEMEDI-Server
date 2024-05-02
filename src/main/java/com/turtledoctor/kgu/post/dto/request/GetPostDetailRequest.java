@@ -7,8 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdatePostRequest {
-    String title;
-    String body;
+public class GetPostDetailRequest {
     Long postId;
 }
