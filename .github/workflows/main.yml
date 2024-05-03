@@ -41,6 +41,7 @@ jobs:
         spring.datasource.username=${{ secrets.DATASOURCE_USERNAME }}
         spring.datasource.password=${{ secrets.DATASOURCE_PASSWORD }}
         spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+        spring.jackson.time-zone=Asia/Seoul
         spring.jpa.hibernate.ddl-auto=update
         spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         spring.jwt.secret=${{ secrets.JWT_SECRET }}
