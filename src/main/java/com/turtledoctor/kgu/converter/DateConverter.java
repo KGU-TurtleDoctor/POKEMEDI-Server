@@ -13,7 +13,7 @@ public class DateConverter {
         log.info(localDateTime.toString());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
         ZonedDateTime zonedDateTime= localDateTime.atZone(ZoneId.of("Asia/Seoul"));
-        log.info(zonedDateTime.toString());
+        log.info(zonedDateTime.toLocalDateTime().toString());
         // LocalDateTime 객체를 문자열로 변환합니다.
         String formattedDateTime = zonedDateTime.format(formatter);
 

@@ -12,7 +12,6 @@ import com.turtledoctor.kgu.post.dto.response.PostListResponse;
 import com.turtledoctor.kgu.post.repository.PostLikeRepository;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class PostService {
 
@@ -79,7 +77,6 @@ public class PostService {
         List<PostListResponse> postList = new ArrayList<>();
 
         for(Post post : rawPostList) {
-            log.info(post.getCreatedAt().toString());
             PostListResponse dto = PostListResponse.builder()
                     .id(post.getId())
                     .title(post.getTitle())
