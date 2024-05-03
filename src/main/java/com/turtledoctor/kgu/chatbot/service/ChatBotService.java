@@ -27,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatBotService {
 
+
     //Openai Api 관련 서비스
     private final OpenAiApiService openAiApiService;
 
@@ -37,6 +38,7 @@ public class ChatBotService {
     private final ChatHistoryService chatHistoryService;
 
     private final MemberRepository memberRepository;
+
 
     private JWTUtil jwtUtil;
 
