@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.chatbot.service;
 
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.chathistory.DTO.ChatHistoryListResponse;
 import com.turtledoctor.kgu.chathistory.service.ChatHistoryService;
 import com.turtledoctor.kgu.chattext.DTO.ChatTextListResponse;
@@ -36,6 +37,8 @@ public class ChatBotService {
     private final ChatHistoryService chatHistoryService;
 
     private final MemberRepository memberRepository;
+
+    private JWTUtil jwtUtil;
 
 
     @Transactional(readOnly = true)
