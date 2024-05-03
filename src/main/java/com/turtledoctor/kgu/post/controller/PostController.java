@@ -1,15 +1,12 @@
 package com.turtledoctor.kgu.post.controller;
 
-import com.turtledoctor.kgu.post.dto.request.CreatePostRequest;
-import com.turtledoctor.kgu.post.dto.request.DeletePostRequest;
-import com.turtledoctor.kgu.post.dto.request.SearchPostRequest;
-import com.turtledoctor.kgu.post.dto.request.UpdatePostRequest;
-import com.turtledoctor.kgu.post.dto.response.PostResponse;
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
+import com.turtledoctor.kgu.post.dto.request.*;
+import com.turtledoctor.kgu.post.dto.response.PostListResponse;
 import com.turtledoctor.kgu.post.service.PostService;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,37 +22,44 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDTO> createPost(@RequestBody CreatePostRequest createPostRequestDTO) {
+    public ResponseEntity<ResponseDTO> createPost(@CookieValue(name = "Authorization") String author, @RequestBody CreatePostRequest createPostRequestDTO) {
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.createPost(createPostRequestDTO))
+                .result(postService.createPost(createPostRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<ResponseDTO> updatePost(@RequestBody UpdatePostRequest updatePostRequestDTO) {
+    @PutMapping("/update/{postId}")
+    public ResponseEntity<ResponseDTO> updatePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId, @RequestBody UpdatePostRequest updatePostRequestDTO) {
+        updatePostRequestDTO.setPostId(postId);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.updatePost(updatePostRequestDTO))
+                .result(postService.updatePost(updatePostRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDTO> deletePost(@RequestBody DeletePostRequest deletePostRequestDTO) {
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<ResponseDTO> deletePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
+        DeletePostRequest deletePostRequestDTO = new DeletePostRequest();
+        deletePostRequestDTO.setPostId(postId);
 
-        postService.deletePost(deletePostRequestDTO);
-        return ResponseEntity.ok().build();
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(postService.deletePost(deletePostRequestDTO, author))
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/list")
     public ResponseEntity<ResponseDTO> getPostList() {
-        List<PostResponse> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
+        List<PostListResponse> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
@@ -65,16 +69,29 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<ResponseDTO> searchPostList(@RequestParam(value = "keyword") String keyword) {
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable("keyword") String keyword) {
         SearchPostRequest postSearchRequestDTO = new SearchPostRequest();
         postSearchRequestDTO.setKeyword(keyword);
-        List<PostResponse> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
+        List<PostListResponse> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
                 .result(rawPostList)
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/detail/{postId}")
+    public ResponseEntity<ResponseDTO> getPostDetail(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
+        GetPostDetailRequest getPostDetailRequestDTO = new GetPostDetailRequest();
+        getPostDetailRequestDTO.setPostId(postId);
+
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(postService.getPostDetailDTO(getPostDetailRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }

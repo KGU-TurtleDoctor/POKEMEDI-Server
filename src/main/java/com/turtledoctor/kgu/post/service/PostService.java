@@ -1,16 +1,21 @@
 package com.turtledoctor.kgu.post.service;
 
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
+import com.turtledoctor.kgu.converter.DateConverter;
+import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
-import com.turtledoctor.kgu.post.dto.request.CreatePostRequest;
-import com.turtledoctor.kgu.post.dto.request.DeletePostRequest;
-import com.turtledoctor.kgu.post.dto.request.SearchPostRequest;
-import com.turtledoctor.kgu.post.dto.request.UpdatePostRequest;
-import com.turtledoctor.kgu.post.dto.response.PostResponse;
+import com.turtledoctor.kgu.entity.PostLike;
+import com.turtledoctor.kgu.entity.repository.MemberRepository;
+import com.turtledoctor.kgu.post.dto.request.*;
+import com.turtledoctor.kgu.post.dto.response.PostDetailResponse;
+import com.turtledoctor.kgu.post.dto.response.PostListResponse;
+import com.turtledoctor.kgu.post.repository.PostLikeRepository;
 import com.turtledoctor.kgu.post.repository.PostRepository;
-import com.turtledoctor.kgu.testPackage.repository.TempMemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,11 +26,21 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final TempMemberRepository tempMemberRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final MemberRepository memberRepository;
 
-    public Long createPost(CreatePostRequest createPostRequestDTO) {
+    @Value("${spring.jwt.secret}")
+    private String secret;
+
+    private JWTUtil jwtUtil;
+
+    @Transactional
+    public Long createPost(CreatePostRequest createPostRequestDTO, String author) {
+
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
         Post newPost = postRepository.save(Post.builder()
-                .member(tempMemberRepository.findByKakaoId(createPostRequestDTO.getKakaoId().toString()))
+                .member(memberRepository.findBykakaoId(kakaoId))
                 .title(createPostRequestDTO.getTitle())
                 .body(createPostRequestDTO.getBody())
                 .likes(0L)
@@ -33,10 +48,12 @@ public class PostService {
                 .commentList(new ArrayList<>())
                 .build()
         );
+
         return newPost.getId();
     }
 
-    public Long updatePost(UpdatePostRequest updatePostRequestDTO) {
+    @Transactional
+    public Long updatePost(UpdatePostRequest updatePostRequestDTO, String author) {
         Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + updatePostRequestDTO.getPostId()));
 
@@ -45,19 +62,22 @@ public class PostService {
         return updatePost.getId();
     }
 
-    public void deletePost(DeletePostRequest deletePostRequestDTO) {
+    @Transactional
+    public boolean deletePost(DeletePostRequest deletePostRequestDTO, String author) {
         Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + deletePostRequestDTO.getPostId()));
 
         postRepository.delete(deletePost);
+        return true;
     }
 
-    public List<PostResponse> createPostListDTO() {
+    @Transactional(readOnly = true)
+    public List<PostListResponse> createPostListDTO() {
         List<Post> rawPostList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
-        List<PostResponse> postList = new ArrayList<>();
+        List<PostListResponse> postList = new ArrayList<>();
 
         for(Post post : rawPostList) {
-            PostResponse dto = PostResponse.builder()
+            PostListResponse dto = PostListResponse.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
@@ -69,13 +89,14 @@ public class PostService {
         return postList;
     }
 
-    public List<PostResponse> createSearchedPostListDTO(SearchPostRequest postSearchRequestDTO) {
+    @Transactional(readOnly = true)
+    public List<PostListResponse> createSearchedPostListDTO(SearchPostRequest postSearchRequestDTO) {
         String keyword = postSearchRequestDTO.getKeyword();
         List<Post> rawSearchedPostList = postRepository.findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(keyword, keyword);
-        List<PostResponse> postList = new ArrayList<>();
+        List<PostListResponse> postList = new ArrayList<>();
 
         for(Post post : rawSearchedPostList) {
-            PostResponse dto = PostResponse.builder()
+            PostListResponse dto = PostListResponse.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
@@ -85,5 +106,28 @@ public class PostService {
             postList.add(dto);
         }
         return postList;
+    }
+
+    @Transactional(readOnly = true)
+    public PostDetailResponse getPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO, String author) {
+
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
+        Post post = postRepository.findById(getPostDetailRequestDTO.getPostId()).get();
+        Member member = memberRepository.findBykakaoId(kakaoId);
+        boolean isWriter = post.getMember().getKakaoId().equals(kakaoId);
+        boolean isLiked = postLikeRepository.existsByPostAndMember(post, member);
+
+        PostDetailResponse dto = PostDetailResponse.builder()
+                .title(post.getTitle())
+                .content(post.getBody())
+                .nickname(post.getMember().getName())
+                .date(DateConverter.ConverteDate(post.getCreatedAt()))
+                .likes(post.getLikes())
+                .comments(post.getComments())
+                .isWriter(isWriter)
+                .isLiked(isLiked)
+                .build();
+        return dto;
     }
 }
