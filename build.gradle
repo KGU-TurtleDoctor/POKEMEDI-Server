@@ -40,6 +40,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator' // 로그 보기  http://localhost:8080/actuator/logfile
+	//AWS S3 이미지 업로드 관련
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.0'
+	implementation 'software.amazon.awssdk:s3:2.17.41'
 
 }
 
