@@ -41,7 +41,7 @@ public class ChatBotController {
 
 
 
-    @GetMapping("/chathistories/{chathistoryId}/chattextlists")
+    @GetMapping("/chathistories/{chathistoryId}/chattexts")
     public ResponseEntity<ResponseDTO> findChatTextFromChatHistory(@CookieValue(name = "Authorization") String author,@PathVariable(name="chathistoryId") Long chatHistoryId){
         jwtUtil = new JWTUtil(secret);
         ResponseDTO responseDTO;
