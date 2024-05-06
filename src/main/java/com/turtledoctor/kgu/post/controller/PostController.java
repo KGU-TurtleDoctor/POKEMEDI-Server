@@ -96,12 +96,4 @@ public class PostController {
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
-
-    @PostMapping("/image/upload")
-    public ResponseEntity<ResponseDTO> postImageUpload(
-            @CookieValue(name = "Authorization") String author,
-            @RequestPart (value = "file") MultipartFile multipartFile,
-
-
-
 }
