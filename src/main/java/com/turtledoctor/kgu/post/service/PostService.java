@@ -130,4 +130,25 @@ public class PostService {
                 .build();
         return dto;
     }
+
+    @Transactional(readOnly = true)
+    public List<PostListResponse> getMyPostListDTO(String author) {
+
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
+        List<Post> rawMyPostList = postRepository.findAllByMember(memberRepository.findBykakaoId(kakaoId));
+        List<PostListResponse> postList = new ArrayList<>();
+
+        for(Post post : rawMyPostList) {
+            PostListResponse dto = PostListResponse.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getBody())
+                    .nickname(post.getMember().getName())
+                    .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
+                    .build();
+            postList.add(dto);
+        }
+        return postList;
+    }
 }

@@ -96,5 +96,16 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("/myPostList")  //내가 쓴 게시글 조회
+    public ResponseEntity<ResponseDTO> getMyPostList(@CookieValue(name = "Authorization") String author) {
+        List<PostListResponse> rawMyPostList = postService.getMyPostListDTO(author);
+
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(rawMyPostList)
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }
