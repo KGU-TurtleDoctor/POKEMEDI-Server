@@ -23,5 +23,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(String titleKeyword, String bodyKeyword);
 
     //게시글 검색 - 작성자
-    List<Post> findAllByMember(Member member);
+    List<Post> findAllByMemberOrderByCreatedAtDesc(Member member);
 }

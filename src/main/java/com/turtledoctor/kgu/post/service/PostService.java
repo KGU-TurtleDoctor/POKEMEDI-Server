@@ -136,7 +136,7 @@ public class PostService {
 
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);
-        List<Post> rawMyPostList = postRepository.findAllByMember(memberRepository.findBykakaoId(kakaoId));
+        List<Post> rawMyPostList = postRepository.findAllByMemberOrderByCreatedAtDesc(memberRepository.findBykakaoId(kakaoId));
         List<PostListResponse> postList = new ArrayList<>();
 
         for(Post post : rawMyPostList) {
