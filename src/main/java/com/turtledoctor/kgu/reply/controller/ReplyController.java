@@ -55,7 +55,13 @@ public class ReplyController {
     }
 
     @PutMapping("/posts/{postId}/comments/{commentId}/replies/{replyId}")
-    public ResponseEntity<ResponseDTO> updateReply(@CookieValue(name = "Authorization") String author,@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,@PathVariable(name = "replyId") Long replyId, @RequestBody UpdateReplyRequest updateReplyRequest){
+    public ResponseEntity<ResponseDTO> updateReply(@CookieValue(name = "Authorization") String author,
+                                                   @PathVariable(name = "postId") Long postId,
+                                                   @PathVariable(name = "commentId") Long commentId,
+                                                   @PathVariable(name = "replyId") Long replyId,
+                                                   @RequestBody UpdateReplyRequest updateReplyRequest){
+
+        
         UpdateReplyDTO updateReplyDTO = UpdateReplyDTO.builder()
                 .authorization(author)
                 .postId(postId)
@@ -86,7 +92,7 @@ public class ReplyController {
     }
 
     @DeleteMapping("/posts/{postId}/comments/{commentId}/replies/{replyId}")
-    public ResponseEntity<ResponseDTO> deleteReply(@CookieValue(name = "Authorization") String author,@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,@PathVariable(name = "replyId") Long replyId, @RequestBody UpdateReplyRequest updateReplyRequest){
+    public ResponseEntity<ResponseDTO> deleteReply(@CookieValue(name = "Authorization") String author,@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,@PathVariable(name = "replyId") Long replyId){
         DeleteReplyDTO deleteReplyDTO = DeleteReplyDTO.builder()
                 .authorization(author)
                 .postId(postId)
