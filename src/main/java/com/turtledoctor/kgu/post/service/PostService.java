@@ -101,7 +101,7 @@ public class PostService {
                     .title(post.getTitle())
                     .content(post.getBody())
                     .nickname(post.getMember().getName())
-                    .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
+                    .date(DateConverter.ConverteDate(post.getCreatedAt()))
                     .build();
             postList.add(dto);
         }
@@ -145,7 +145,7 @@ public class PostService {
                     .title(post.getTitle())
                     .content(post.getBody())
                     .nickname(post.getMember().getName())
-                    .date(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")))
+                    .date(DateConverter.ConverteDate(post.getCreatedAt()))
                     .build();
             postList.add(dto);
         }
