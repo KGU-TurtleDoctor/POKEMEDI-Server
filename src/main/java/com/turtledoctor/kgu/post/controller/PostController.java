@@ -57,7 +57,7 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping({"/list", "/search"})
+    @GetMapping({"/list", "/search/"})
     public ResponseEntity<ResponseDTO> getPostList() {
         List<PostListResponse> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
 
