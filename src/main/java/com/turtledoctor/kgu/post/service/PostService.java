@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.turtledoctor.kgu.post.exception.ErrorCode.POST_FORBIDDEN;
-import static com.turtledoctor.kgu.post.exception.ErrorCode.POST_NOT_FOUND;
+import static com.turtledoctor.kgu.error.ErrorCode.POST_FORBIDDEN;
+import static com.turtledoctor.kgu.error.ErrorCode.POST_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

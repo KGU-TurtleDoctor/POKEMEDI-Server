@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.post.exception;
 
+import com.turtledoctor.kgu.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
