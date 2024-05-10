@@ -8,6 +8,7 @@ import com.turtledoctor.kgu.entity.repository.MemberRepository;
 import com.turtledoctor.kgu.post.dto.request.*;
 import com.turtledoctor.kgu.post.dto.response.PostDetailResponse;
 import com.turtledoctor.kgu.post.dto.response.PostListResponse;
+import com.turtledoctor.kgu.post.exception.ErrorCode;
 import com.turtledoctor.kgu.post.exception.PostException;
 import com.turtledoctor.kgu.post.repository.PostLikeRepository;
 import com.turtledoctor.kgu.post.repository.PostRepository;
@@ -59,10 +60,10 @@ public class PostService {
     public Long updatePost(UpdatePostRequest updatePostRequestDTO, String author) {
         Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId()).get();
         if(updatePost == null) {
-            throw new PostException(POST_NOT_FOUND);
+            throw new PostException(ErrorCode.POST_NOT_FOUND);
         }
         if(!updatePost.getMember().getKakaoId().equals(author)) {
-            throw new PostException(POST_FORBIDDEN);
+            throw new PostException(ErrorCode.POST_FORBIDDEN);
         }
 
         updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
@@ -74,10 +75,10 @@ public class PostService {
     public boolean deletePost(DeletePostRequest deletePostRequestDTO, String author) {
         Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId()).get();
         if(deletePost == null) {
-            throw new PostException(POST_NOT_FOUND);
+            throw new PostException(ErrorCode.POST_NOT_FOUND);
         }
         if(!deletePost.getMember().getKakaoId().equals(author)) {
-            throw new PostException(POST_FORBIDDEN);
+            throw new PostException(ErrorCode.POST_FORBIDDEN);
         }
 
         postRepository.delete(deletePost);
