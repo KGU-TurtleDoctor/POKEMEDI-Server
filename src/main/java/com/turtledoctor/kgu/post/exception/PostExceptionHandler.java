@@ -9,7 +9,7 @@ public class PostExceptionHandler {
 
 
     @ExceptionHandler(PostForbiddenException.class)
-    public ResponseEntity<ResponseDTO> handlePostForbiddenException(PostForbiddenException ex){
+    public ResponseEntity<ResponseDTO> handlePostException(PostException ex){
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(ex.getErrorCode().isSuccess())
                 .stateCode(ex.getErrorCode().getStatus())
