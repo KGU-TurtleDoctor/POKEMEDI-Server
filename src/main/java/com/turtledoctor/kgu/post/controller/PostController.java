@@ -1,6 +1,7 @@
 package com.turtledoctor.kgu.post.controller;
 
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
+import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.post.dto.request.*;
 import com.turtledoctor.kgu.post.dto.response.PostListResponse;
 import com.turtledoctor.kgu.post.service.PostService;
@@ -108,6 +109,18 @@ public class PostController {
                 .isSuccess(true)
                 .stateCode(200)
                 .result(rawMyPostList)
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/myPost")
+    public ResponseEntity<ResponseDTO> getMyPost(@CookieValue(name = "Authorization") String author) {
+        PostListResponse rawMyPost = postService.createMyPostDTO(author);
+
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(rawMyPost)
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
