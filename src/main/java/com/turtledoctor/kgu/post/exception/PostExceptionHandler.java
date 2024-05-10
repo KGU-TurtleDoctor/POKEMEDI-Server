@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class PostExceptionHandler {
 
 
-    @ExceptionHandler(PostForbiddenException.class)
+    @ExceptionHandler(PostException.class)
     public ResponseEntity<ResponseDTO> handlePostException(PostException ex){
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(ex.getErrorCode().isSuccess())
@@ -16,6 +16,6 @@ public class PostExceptionHandler {
                 .result(ex.getErrorCode().getMessage())
                 .build();
 
-        return ResponseEntity.ok().body(responseDTO);
+        return ResponseEntity.status(ex.getErrorCode().getStatus()).body(responseDTO);
     }
 }
