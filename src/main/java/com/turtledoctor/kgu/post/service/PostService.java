@@ -115,25 +115,25 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostListResponse> createSearchedPostListDTO(SearchPostRequest postSearchRequestDTO) {
         String keyword = postSearchRequestDTO.getKeyword();
-        List<PostListResponse> postList;
+        List<Post> rawSearchedPostList;
 
         if(keyword.isBlank()) {
-            postList = createPostListDTO();
+            rawSearchedPostList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         }
         else {
-            List<Post> rawSearchedPostList = postRepository.findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(keyword, keyword);
-            postList = new ArrayList<>();
+            rawSearchedPostList = postRepository.findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(keyword, keyword);
+        }
 
-            for(Post post : rawSearchedPostList) {
-                PostListResponse dto = PostListResponse.builder()
-                        .id(post.getId())
-                        .title(post.getTitle())
-                        .content(post.getBody())
-                        .nickname(post.getMember().getName())
-                        .date(DateConverter.ConverteDate(post.getCreatedAt()))
-                        .build();
-                postList.add(dto);
-            }
+        List<PostListResponse> postList= new ArrayList<>();
+        for(Post post : rawSearchedPostList) {
+            PostListResponse dto = PostListResponse.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getBody())
+                    .nickname(post.getMember().getName())
+                    .date(DateConverter.ConverteDate(post.getCreatedAt()))
+                    .build();
+            postList.add(dto);
         }
         return postList;
     }
