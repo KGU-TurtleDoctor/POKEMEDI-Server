@@ -117,7 +117,7 @@ public class PostService {
         String keyword = postSearchRequestDTO.getKeyword();
         List<PostListResponse> postList;
 
-        if(keyword.isBlank()) {
+        if(keyword.isBlank() || keyword.isEmpty()) {
             postList = createPostListDTO();
         }
         else {
