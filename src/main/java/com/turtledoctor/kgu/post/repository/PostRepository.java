@@ -25,5 +25,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     //게시글 검색 - 작성자
     List<Post> findAllByMemberOrderByCreatedAtDesc(Member member);
 
-    Post findPostByMemberOrderByCreatedAtDesc(Member member);
+    Post findTop1ByMemberOrderByCreatedAtDesc(Member member);
 }

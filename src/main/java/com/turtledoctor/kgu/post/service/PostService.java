@@ -191,7 +191,7 @@ public class PostService {
     public PostListResponse createMyPostDTO(String author) {
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);
-        Post rawMyPost = postRepository.findPostByMemberOrderByCreatedAtDesc(memberRepository.findBykakaoId(kakaoId));
+        Post rawMyPost = postRepository.findTop1ByMemberOrderByCreatedAtDesc(memberRepository.findBykakaoId(kakaoId));
         PostListResponse dto = PostListResponse.builder()
                 .id(rawMyPost.getId())
                 .title(rawMyPost.getTitle())
