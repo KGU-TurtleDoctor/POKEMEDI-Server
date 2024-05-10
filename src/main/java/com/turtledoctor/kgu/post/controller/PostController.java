@@ -70,7 +70,7 @@ public class PostController {
     }
 
     @GetMapping("/search/{keyword}")
-    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable(name = "keyword", required = false) String keyword) {
+    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable(name = "keyword", required = false, value = " ") String keyword) {
         SearchPostRequest postSearchRequestDTO = new SearchPostRequest();
         postSearchRequestDTO.setKeyword(keyword);
         List<PostListResponse> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
