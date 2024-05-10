@@ -57,7 +57,7 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping({"/list", "/search/"})
+    @GetMapping("/list")
     public ResponseEntity<ResponseDTO> getPostList() {
         List<PostListResponse> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
 
@@ -69,8 +69,8 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/search/{keyword}")
-    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable("keyword") String keyword) {
+    @GetMapping({"/search/{keyword}", "/search/"})
+    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable(name = "keyword", required = false) String keyword) {
 
         SearchPostRequest postSearchRequestDTO = new SearchPostRequest();
         postSearchRequestDTO.setKeyword(keyword);
