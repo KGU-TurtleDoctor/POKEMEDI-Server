@@ -4,11 +4,11 @@ import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.converter.DateConverter;
 import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
-import com.turtledoctor.kgu.entity.PostLike;
 import com.turtledoctor.kgu.entity.repository.MemberRepository;
 import com.turtledoctor.kgu.post.dto.request.*;
 import com.turtledoctor.kgu.post.dto.response.PostDetailResponse;
 import com.turtledoctor.kgu.post.dto.response.PostListResponse;
+import com.turtledoctor.kgu.post.exception.PostException;
 import com.turtledoctor.kgu.post.repository.PostLikeRepository;
 import com.turtledoctor.kgu.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.turtledoctor.kgu.post.exception.ErrorCode.POST_FORBIDDEN;
+import static com.turtledoctor.kgu.post.exception.ErrorCode.POST_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +57,13 @@ public class PostService {
 
     @Transactional
     public Long updatePost(UpdatePostRequest updatePostRequestDTO, String author) {
-        Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + updatePostRequestDTO.getPostId()));
+        Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId()).get();
+        if(updatePost == null) {
+            throw new PostException(POST_NOT_FOUND);
+        }
+        if(!updatePost.getMember().getKakaoId().equals(author)) {
+            throw new PostException(POST_FORBIDDEN);
+        }
 
         updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
         postRepository.save(updatePost);
@@ -64,8 +72,13 @@ public class PostService {
 
     @Transactional
     public boolean deletePost(DeletePostRequest deletePostRequestDTO, String author) {
-        Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("No post found with ID: " + deletePostRequestDTO.getPostId()));
+        Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId()).get();
+        if(deletePost == null) {
+            throw new PostException(POST_NOT_FOUND);
+        }
+        if(!deletePost.getMember().getKakaoId().equals(author)) {
+            throw new PostException(POST_FORBIDDEN);
+        }
 
         postRepository.delete(deletePost);
         return true;
