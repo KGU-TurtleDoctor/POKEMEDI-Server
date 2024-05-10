@@ -17,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +62,11 @@ public class PostService {
             throw new PostException(POST_NOT_FOUND);
         }
 
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
+
         Post updatePost = optionalPost.get();
-        if(!updatePost.getMember().getKakaoId().equals(author)) {
+        if(!updatePost.getMember().getKakaoId().equals(kakaoId)) {
             throw new PostException(POST_FORBIDDEN);
         }
 
@@ -80,8 +82,11 @@ public class PostService {
             throw new PostException(POST_NOT_FOUND);
         }
 
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
+
         Post deletePost = optionalPost.get();
-        if(!deletePost.getMember().getKakaoId().equals(author)) {
+        if(!deletePost.getMember().getKakaoId().equals(kakaoId)) {
             throw new PostException(POST_FORBIDDEN);
         }
 
@@ -128,6 +133,11 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostDetailResponse getPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO, String author) {
+
+        Optional<Post> optionalPost = postRepository.findById(getPostDetailRequestDTO.getPostId());
+        if(optionalPost.isEmpty()) {
+            throw new PostException(POST_NOT_FOUND);
+        }
 
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);

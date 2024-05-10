@@ -33,7 +33,7 @@ public class PostController {
     }
 
     @PutMapping("/update/{postId}")
-    public ResponseEntity<ResponseDTO> updatePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId, @RequestBody UpdatePostRequest updatePostRequestDTO) throws Exception{
+    public ResponseEntity<ResponseDTO> updatePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId, @RequestBody UpdatePostRequest updatePostRequestDTO) {
         updatePostRequestDTO.setPostId(postId);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
@@ -45,7 +45,7 @@ public class PostController {
     }
 
     @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<ResponseDTO> deletePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) throws Exception {
+    public ResponseEntity<ResponseDTO> deletePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
         DeletePostRequest deletePostRequestDTO = new DeletePostRequest();
         deletePostRequestDTO.setPostId(postId);
 
