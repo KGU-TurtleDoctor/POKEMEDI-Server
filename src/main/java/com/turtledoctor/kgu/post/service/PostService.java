@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.turtledoctor.kgu.post.exception.ErrorCode.POST_FORBIDDEN;
 import static com.turtledoctor.kgu.post.exception.ErrorCode.POST_NOT_FOUND;
@@ -57,31 +58,39 @@ public class PostService {
 
     @Transactional
     public Long updatePost(UpdatePostRequest updatePostRequestDTO, String author) {
-        Post updatePost = postRepository.findById(updatePostRequestDTO.getPostId()).get();
-        if(updatePost == null) {
+        Optional<Post> optionalPost = postRepository.findById(updatePostRequestDTO.getPostId());
+        if(optionalPost.isPresent()) {
+            Post updatePost = optionalPost.get();
+            if(!updatePost.getMember().getKakaoId().equals(author)) {
+                throw new PostException(POST_FORBIDDEN);
+            }
+            else {
+                updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
+                postRepository.save(updatePost);
+                return updatePost.getId();
+            }
+        }
+        else {
             throw new PostException(POST_NOT_FOUND);
         }
-        if(!updatePost.getMember().getKakaoId().equals(author)) {
-            throw new PostException(POST_FORBIDDEN);
-        }
-
-        updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
-        postRepository.save(updatePost);
-        return updatePost.getId();
     }
 
     @Transactional
     public boolean deletePost(DeletePostRequest deletePostRequestDTO, String author) {
-        Post deletePost = postRepository.findById(deletePostRequestDTO.getPostId()).get();
-        if(deletePost == null) {
+        Optional<Post> optionalPost = postRepository.findById(deletePostRequestDTO.getPostId());
+        if(optionalPost.isPresent()) {
+            Post deletePost = optionalPost.get();
+            if(!deletePost.getMember().getKakaoId().equals(author)) {
+                throw new PostException(POST_FORBIDDEN);
+            }
+            else {
+                postRepository.delete(deletePost);
+                return true;
+            }
+        }
+        else {
             throw new PostException(POST_NOT_FOUND);
         }
-        if(!deletePost.getMember().getKakaoId().equals(author)) {
-            throw new PostException(POST_FORBIDDEN);
-        }
-
-        postRepository.delete(deletePost);
-        return true;
     }
 
     @Transactional(readOnly = true)
