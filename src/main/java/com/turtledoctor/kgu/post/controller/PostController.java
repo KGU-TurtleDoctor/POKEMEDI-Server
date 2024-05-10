@@ -107,5 +107,4 @@ public class PostController {
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
-
 }
