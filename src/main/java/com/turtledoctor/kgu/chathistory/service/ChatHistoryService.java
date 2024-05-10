@@ -2,6 +2,7 @@ package com.turtledoctor.kgu.chathistory.service;
 
 import com.turtledoctor.kgu.chathistory.DTO.ChatHistoryListResponse;
 import com.turtledoctor.kgu.chathistory.repository.ChatHistoryRepository;
+import com.turtledoctor.kgu.converter.DateConverter;
 import com.turtledoctor.kgu.entity.ChatHistory;
 import com.turtledoctor.kgu.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,9 @@ public class ChatHistoryService {
         for(ChatHistory chatHistory : chatHistoryList){
             result.add(ChatHistoryListResponse.builder()
                     .chatHistoryId(chatHistory.getId())
-                    .Title(chatHistory.getTitle()).build());
+                    .Title(chatHistory.getTitle())
+                    .date(DateConverter.ConverteDate(chatHistory.getCreatedAt()))
+                    .name(member.getName()).build());
         }
         return result;
     }
