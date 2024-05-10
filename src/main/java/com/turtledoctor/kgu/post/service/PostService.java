@@ -59,38 +59,34 @@ public class PostService {
     @Transactional
     public Long updatePost(UpdatePostRequest updatePostRequestDTO, String author) {
         Optional<Post> optionalPost = postRepository.findById(updatePostRequestDTO.getPostId());
-        if(optionalPost.isPresent()) {
-            Post updatePost = optionalPost.get();
-            if(!updatePost.getMember().getKakaoId().equals(author)) {
-                throw new PostException(POST_FORBIDDEN);
-            }
-            else {
-                updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
-                postRepository.save(updatePost);
-                return updatePost.getId();
-            }
-        }
-        else {
+        if(optionalPost.isEmpty()) {
             throw new PostException(POST_NOT_FOUND);
         }
+
+        Post updatePost = optionalPost.get();
+        if(!updatePost.getMember().getKakaoId().equals(author)) {
+            throw new PostException(POST_FORBIDDEN);
+        }
+
+        updatePost.updatePost(updatePostRequestDTO.getTitle(), updatePostRequestDTO.getBody());
+        postRepository.save(updatePost);
+        return updatePost.getId();
     }
 
     @Transactional
     public boolean deletePost(DeletePostRequest deletePostRequestDTO, String author) {
         Optional<Post> optionalPost = postRepository.findById(deletePostRequestDTO.getPostId());
-        if(optionalPost.isPresent()) {
-            Post deletePost = optionalPost.get();
-            if(!deletePost.getMember().getKakaoId().equals(author)) {
-                throw new PostException(POST_FORBIDDEN);
-            }
-            else {
-                postRepository.delete(deletePost);
-                return true;
-            }
-        }
-        else {
+        if(optionalPost.isEmpty()) {
             throw new PostException(POST_NOT_FOUND);
         }
+
+        Post deletePost = optionalPost.get();
+        if(!deletePost.getMember().getKakaoId().equals(author)) {
+            throw new PostException(POST_FORBIDDEN);
+        }
+
+        postRepository.delete(deletePost);
+        return true;
     }
 
     @Transactional(readOnly = true)
