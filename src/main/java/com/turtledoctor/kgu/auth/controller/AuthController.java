@@ -41,7 +41,7 @@ public class AuthController {
         }
 
         //expired check
-        try {
+        try { // try catch 나중에 exception handler로 수정.
             jwtUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
 
