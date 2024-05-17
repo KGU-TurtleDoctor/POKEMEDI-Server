@@ -20,6 +20,19 @@ public class ChatHistoryService {
 
     private final ChatHistoryRepository chatHistoryRepository;
 
+
+    @Transactional(readOnly = true)
+    public ChatHistoryListResponse findChatHistoryOne(Member member){
+        ChatHistory chatHistory = chatHistoryRepository.findTop1ByMember(member);
+
+        ChatHistoryListResponse result = ChatHistoryListResponse.builder()
+                .chatHistoryId(chatHistory.getId())
+                .Title(chatHistory.getTitle())
+                .date(DateConverter.ConverteDate(chatHistory.getCreatedAt()))
+                .name(member.getName()).build();
+
+        return result;
+    }
     @Transactional(readOnly = true)
     public List<ChatHistoryListResponse> findChatHistoryList(Member member){
 
