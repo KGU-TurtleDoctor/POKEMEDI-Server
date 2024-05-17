@@ -186,4 +186,19 @@ public class PostService {
         }
         return postList;
     }
+
+    @Transactional(readOnly = true)
+    public PostListResponse createMyPostDTO(String author) {
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
+        Post rawMyPost = postRepository.findTop1ByMemberOrderByCreatedAtDesc(memberRepository.findBykakaoId(kakaoId));
+        PostListResponse dto = PostListResponse.builder()
+                .id(rawMyPost.getId())
+                .title(rawMyPost.getTitle())
+                .content(rawMyPost.getBody())
+                .nickname(rawMyPost.getMember().getName())
+                .date(DateConverter.ConverteDate(rawMyPost.getCreatedAt()))
+                .build();
+        return dto;
+    }
 }
