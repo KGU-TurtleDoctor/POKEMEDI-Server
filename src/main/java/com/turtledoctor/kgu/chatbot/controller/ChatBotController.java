@@ -78,7 +78,7 @@ public class ChatBotController {
         }
     }
 
-    @GetMapping("/chathsitory")
+    @GetMapping("/chathistory")
     public ResponseEntity<ResponseDTO> findChatHistoryOne(@CookieValue(name = "Authorization") String author){
 
         jwtUtil = new JWTUtil(secret);
