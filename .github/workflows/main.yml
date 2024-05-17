@@ -3,9 +3,6 @@ name: pokemedi main server CI/CD
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 env:
   #S3
   S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }},
