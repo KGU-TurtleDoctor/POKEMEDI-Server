@@ -199,7 +199,7 @@ public class CommentService {
         Optional<Post> optionalPost = postRepository.findById(deleteCommentRequest.getPostId());
 
         if(optionalPost.isEmpty()) throw new Exception("없는 게시글입니다.");
-        if(comment.getPost().getId().equals(deleteCommentRequest.getPostId())) throw new Exception("게시글에 없는 댓글입니다.");
+        if(!comment.getPost().getId().equals(deleteCommentRequest.getPostId())) throw new Exception("게시글에 없는 댓글입니다.");
         Post post = optionalPost.get();
 
         post.minusComments();

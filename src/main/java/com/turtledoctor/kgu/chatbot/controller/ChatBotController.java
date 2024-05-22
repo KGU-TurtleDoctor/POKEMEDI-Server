@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,9 +41,9 @@ public class ChatBotController {
 
 
 
-    @GetMapping("/chathistory/chattextlist")
-    public ResponseEntity<ResponseDTO> findChatTextFromChatHistory(@RequestParam(name="chathistoryid") Long chatHistoryId){
-
+    @GetMapping("/chathistories/{chathistoryId}/chattexts")
+    public ResponseEntity<ResponseDTO> findChatTextFromChatHistory(@CookieValue(name = "Authorization") String author,@PathVariable(name="chathistoryId") Long chatHistoryId){
+        jwtUtil = new JWTUtil(secret);
         ResponseDTO responseDTO;
         try{
             responseDTO = ResponseDTO.builder()
@@ -60,7 +61,7 @@ public class ChatBotController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/chathistory/chathistorylist")
+    @GetMapping("/chathistories")
     public ResponseEntity<ResponseDTO> findChatHistory(@CookieValue(name = "Authorization") String author){
 
         jwtUtil = new JWTUtil(secret);
@@ -77,4 +78,19 @@ public class ChatBotController {
         }
     }
 
+    @GetMapping("/chathistory")
+    public ResponseEntity<ResponseDTO> findChatHistoryOne(@CookieValue(name = "Authorization") String author){
+
+        jwtUtil = new JWTUtil(secret);
+        Long kakaoId = Long.valueOf(jwtUtil.getkakaoId(author));
+        ResponseDTO responseDTO;
+        try{
+            responseDTO = ResponseDTO.builder().result(chatBotService.findChatHistoryByMember(kakaoId)).isSuccess(true).stateCode(200).build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch (NullPointerException e){
+            responseDTO = ResponseDTO.builder().stateCode(HttpStatus.BAD_REQUEST.value()).isSuccess(false)
+                    .result(ErrorMessage.builder().errorMessage("회원 정보가 없습니다.").build()).build();
+            return ResponseEntity.status(400).body(responseDTO);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.post.repository;
 
+import com.turtledoctor.kgu.entity.Member;
 import com.turtledoctor.kgu.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -20,4 +21,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     //게시글 검색 - 제목+본문
     List<Post> findAllByTitleContainingOrBodyContainingOrderByCreatedAtDesc(String titleKeyword, String bodyKeyword);
+
+    //게시글 검색 - 작성자
+    List<Post> findAllByMemberOrderByCreatedAtDesc(Member member);
+
+    //나의 게시글 한 개 조회
+    Post findTop1ByMemberOrderByCreatedAtDesc(Member member);
 }

@@ -2,6 +2,7 @@ package com.turtledoctor.kgu.chathistory.service;
 
 import com.turtledoctor.kgu.chathistory.DTO.ChatHistoryListResponse;
 import com.turtledoctor.kgu.chathistory.repository.ChatHistoryRepository;
+import com.turtledoctor.kgu.converter.DateConverter;
 import com.turtledoctor.kgu.entity.ChatHistory;
 import com.turtledoctor.kgu.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,19 @@ public class ChatHistoryService {
 
     private final ChatHistoryRepository chatHistoryRepository;
 
+
+    @Transactional(readOnly = true)
+    public ChatHistoryListResponse findChatHistoryOne(Member member){
+        ChatHistory chatHistory = chatHistoryRepository.findTop1ByMember(member);
+
+        ChatHistoryListResponse result = ChatHistoryListResponse.builder()
+                .chatHistoryId(chatHistory.getId())
+                .Title(chatHistory.getTitle())
+                .date(DateConverter.ConverteDate(chatHistory.getCreatedAt()))
+                .name(member.getName()).build();
+
+        return result;
+    }
     @Transactional(readOnly = true)
     public List<ChatHistoryListResponse> findChatHistoryList(Member member){
 
@@ -29,7 +43,9 @@ public class ChatHistoryService {
         for(ChatHistory chatHistory : chatHistoryList){
             result.add(ChatHistoryListResponse.builder()
                     .chatHistoryId(chatHistory.getId())
-                    .Title(chatHistory.getTitle()).build());
+                    .Title(chatHistory.getTitle())
+                    .date(DateConverter.ConverteDate(chatHistory.getCreatedAt()))
+                    .name(member.getName()).build());
         }
         return result;
     }
