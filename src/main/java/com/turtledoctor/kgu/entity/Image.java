@@ -14,11 +14,8 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 200)
-    private String fileName;
-
-    @Column(nullable = false, length = 200)
-    private String filePath;
+    @Column(nullable = false, length = 1024)
+    private String imageURL;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
