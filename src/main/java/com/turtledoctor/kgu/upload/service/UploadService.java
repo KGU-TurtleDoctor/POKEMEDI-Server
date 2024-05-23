@@ -21,6 +21,9 @@
         @Value("${aws.s3.bucket}")
         private String bucket;
 
+        @Value("${aws.s3.file.max-size}")
+        private long maxFileSize;
+
         private final S3Presigner s3PreSigner;
 
         @Autowired
@@ -35,7 +38,7 @@
                 PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                         .bucket(bucket)
                         .key(imageUploadDTO.getUploadFolder() + "/" + UUID.randomUUID().toString())
-                        .contentType("image/" + imageUploadDTO.getExtension())
+                        .contentLength(maxFileSize) // 현재 용량 제한은 10MB
                         .build();
 
                 PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()

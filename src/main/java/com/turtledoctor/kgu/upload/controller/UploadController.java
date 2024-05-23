@@ -19,14 +19,12 @@ public class UploadController {
 
     private final UploadService uploadService;
 
-    @GetMapping ("/")
+    @GetMapping ("")
     public ResponseEntity<ResponseDTO> getPreSignedUrlList(
-            @RequestParam("extension") String extension,
             @RequestParam("using") String uploadFolder,
             @RequestParam("number") int urlNumber
     ) {
         ImageUploadDTO imageUploadDTO = ImageUploadDTO.builder()
-                .extension(extension)
                 .uploadFolder(uploadFolder)
                 .urlNumber(urlNumber)
                 .build();

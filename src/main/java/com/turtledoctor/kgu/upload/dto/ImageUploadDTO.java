@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ImageUploadDTO {
-    String extension;
     String uploadFolder;
     int urlNumber;
 }
