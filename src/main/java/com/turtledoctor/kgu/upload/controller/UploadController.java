@@ -21,7 +21,7 @@ public class UploadController {
 
     @GetMapping ("")
     public ResponseEntity<ResponseDTO> getPreSignedUrlList(
-            @RequestParam("using") String uploadFolder,
+            @RequestParam("path") String uploadFolder,
             @RequestParam("number") int urlNumber
     ) {
         ImageUploadDTO imageUploadDTO = ImageUploadDTO.builder()

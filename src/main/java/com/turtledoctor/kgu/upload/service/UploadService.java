@@ -38,7 +38,7 @@
                 PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                         .bucket(bucket)
                         .key(imageUploadDTO.getUploadFolder() + "/" + UUID.randomUUID().toString())
-                        .contentLength(maxFileSize) // 현재 용량 제한은 10MB
+                        .contentLength(maxFileSize) // 현재 용량 제한은 10MB. 환경변수에서 지정
                         .build();
 
                 PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
