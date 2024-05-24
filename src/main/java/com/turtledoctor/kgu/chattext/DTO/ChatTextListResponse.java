@@ -9,7 +9,7 @@ import lombok.Setter;
 @Builder
 public class ChatTextListResponse {
 
-    ChatRole role;
+    int role;
 
     String content;
 
