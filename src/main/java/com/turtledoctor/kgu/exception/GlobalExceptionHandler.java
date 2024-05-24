@@ -1,12 +1,13 @@
-package com.turtledoctor.kgu.post.exception;
+package com.turtledoctor.kgu.exception;
 
+import com.turtledoctor.kgu.post.exception.PostException;
 import com.turtledoctor.kgu.response.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-@RestControllerAdvice
-public class PostExceptionHandler {
 
+@RestControllerAdvice
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(PostException.class)
     public ResponseEntity<ResponseDTO> handlePostException(PostException ex){
