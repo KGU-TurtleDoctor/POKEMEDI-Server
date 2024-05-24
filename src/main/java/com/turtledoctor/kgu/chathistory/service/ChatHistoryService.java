@@ -23,7 +23,7 @@ public class ChatHistoryService {
 
     @Transactional(readOnly = true)
     public ChatHistoryListResponse findChatHistoryOne(Member member){
-        ChatHistory chatHistory = chatHistoryRepository.findTop1ByMember(member);
+        ChatHistory chatHistory = chatHistoryRepository.findTop1ByMemberOrderByCreatedAtDesc(member);
 
         ChatHistoryListResponse result = ChatHistoryListResponse.builder()
                 .chatHistoryId(chatHistory.getId())
@@ -36,7 +36,7 @@ public class ChatHistoryService {
     @Transactional(readOnly = true)
     public List<ChatHistoryListResponse> findChatHistoryList(Member member){
 
-        List<ChatHistory> chatHistoryList = member.getChatHistoryList();
+        List<ChatHistory> chatHistoryList = chatHistoryRepository.findChatHistoryByMemberOrderByUpdatedAtDesc(member);
 
         List<ChatHistoryListResponse> result = new ArrayList<>();
 
