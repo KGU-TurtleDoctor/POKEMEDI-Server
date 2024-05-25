@@ -20,6 +20,7 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // api 도메인 변경 요
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 
