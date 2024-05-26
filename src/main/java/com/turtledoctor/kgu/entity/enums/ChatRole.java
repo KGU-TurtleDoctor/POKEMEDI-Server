@@ -11,5 +11,4 @@ public enum ChatRole {
     CHATBOT(0), USER(1);
 
     private int code;
-
 }
