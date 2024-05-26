@@ -33,6 +33,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Long kakaoId = oAuth2Response.getProviderId();
         Member existData = memberRepository.findBykakaoId(kakaoId);
 
+
+        //해당 로직이 필요한가?
+
         if(existData == null) { // 첫 로그인
 
             Member member = Member.builder().build();
