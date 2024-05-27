@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
-
 @AllArgsConstructor
 @Getter
 public enum ChatRole {
-    CHATBOT, USER
+    CHATBOT(0), USER(1);
+
+    private int code;
 }

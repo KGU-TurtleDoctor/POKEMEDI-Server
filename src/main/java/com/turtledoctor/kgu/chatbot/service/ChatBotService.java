@@ -138,7 +138,7 @@ public class ChatBotService {
 
         List<ChatTextListResponse> result = new ArrayList<>();
         for(ChatText chatText : chatHistory.getChatTextList()){
-            result.add(ChatTextListResponse.builder().content(chatText.getBody()).role(chatText.getChatRole()).build());
+            result.add(ChatTextListResponse.builder().content(chatText.getBody()).role(chatText.getChatRole().getCode()).build());
         }
 
         return result;
