@@ -1,4 +1,4 @@
-package com.turtledoctor.kgu.error;
+package com.turtledoctor.kgu.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
