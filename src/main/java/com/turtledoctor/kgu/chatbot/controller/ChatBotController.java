@@ -49,9 +49,9 @@ public class ChatBotController {
             responseDTO = ResponseDTO.builder()
                     .stateCode(200)
                     .isSuccess(true)
-                    .result(chatBotService.findChatTextListByHisotoryID(chatHistoryId)).build();
+                    .result(chatBotService.findChatTextListByHisotoryID(jwtUtil.getkakaoId(author),chatHistoryId)).build();
 
-        }catch (ValidException e){
+        }catch (Exception e){
             responseDTO = ResponseDTO.builder()
                     .stateCode(401)
                     .isSuccess(true)
