@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CookieValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,10 +134,13 @@ public class ChatBotService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatTextListResponse> findChatTextListByHisotoryID(Long chatHistoryId) throws ValidException {
+    public List<ChatTextListResponse> findChatTextListByHisotoryID(String kakaoId,Long chatHistoryId) throws Exception {
         ChatHistory chatHistory = chatHistoryService.findChatHistory(chatHistoryId);
 
         List<ChatTextListResponse> result = new ArrayList<>();
+        Member member = chatHistory.getMember();
+
+        if(!member.getKakaoId().equals(kakaoId)) throw new Exception("잘못된 요청입니다");
         for(ChatText chatText : chatHistory.getChatTextList()){
             result.add(ChatTextListResponse.builder().content(chatText.getBody()).role(chatText.getChatRole().getCode()).build());
         }
