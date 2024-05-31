@@ -95,17 +95,23 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListResponse> createPostListDTO() {
+    public List<PostListResponse> getPostListDTO(String author) {
+
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
+
         List<Post> rawPostList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         List<PostListResponse> postList = new ArrayList<>();
 
         for(Post post : rawPostList) {
+            boolean isWriter = kakaoId.equals(post.getMember().getKakaoId());
             PostListResponse dto = PostListResponse.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
                     .nickname(post.getMember().getName())
                     .date(DateConverter.ConverteDate(post.getCreatedAt()))
+                    .isWriter(isWriter)
                     .build();
             postList.add(dto);
         }

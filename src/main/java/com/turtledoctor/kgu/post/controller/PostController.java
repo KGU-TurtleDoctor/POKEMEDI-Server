@@ -60,8 +60,8 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDTO> getPostList() {
-        List<PostListResponse> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
+    public ResponseEntity<ResponseDTO> getPostList(@CookieValue(name = "Authorization") String author) {
+        List<PostListResponse> rawPostList = postService.getPostListDTO(author); //조회 시 DB에 리스트가 없다면 nullException 예외
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
