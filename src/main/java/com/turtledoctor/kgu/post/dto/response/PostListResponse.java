@@ -13,4 +13,5 @@ public class PostListResponse {
     String content;
     String nickname;
     String date;
+    boolean isWriter;
 }
