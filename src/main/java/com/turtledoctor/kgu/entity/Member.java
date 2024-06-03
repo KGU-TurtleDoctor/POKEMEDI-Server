@@ -23,18 +23,21 @@ public class Member extends BaseEntity {
     @Column(name = "nickname",nullable = false, length = 30)
     private String name;
 
-    @Column(name = "role", nullable = false, length = 30)
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
-
-    @Column(nullable = false, length = 200)
-    private Long kakaoId;
-
     @Column(nullable = false, length = 200)
     private String email;
 
+    @Column(nullable = false, length = 100)
+    private String kakaoId;
+
+    @Column(name = "role", columnDefinition = "VARCHAR(20)")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> postList;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikeList;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
@@ -44,4 +47,8 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChatHistory> chatHistoryList;
+
+    public void updateMember(String nickname){
+        this.name = nickname;
+    }
 }

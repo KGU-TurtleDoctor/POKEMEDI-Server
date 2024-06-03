@@ -44,7 +44,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
-
         //토큰 생성
         String access = jwtUtil.createJwt("access", kakaoId, role, 60*60*10L);
         String refresh = jwtUtil.createJwt("refresh", kakaoId, role, 24*60*60*10L);

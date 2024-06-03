@@ -17,11 +17,12 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -30,5 +31,9 @@ public class Comment extends BaseEntity {
 
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Reply> replyList;
+
+    public void updateComment(String body){
+        this.body = body;
+    }
 
 }

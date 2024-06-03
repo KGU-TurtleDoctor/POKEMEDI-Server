@@ -17,11 +17,10 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    //기존 ERD에 title 없어서 추가. 타입은 어떻게?
     @Column(nullable = false, length = 100)
     private String title;
 
@@ -35,6 +34,34 @@ public class Post extends BaseEntity {
     private Long comments;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Image> postImageList;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikeList;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
 
+    public void updatePost(String title, String body){
+        this.title = title;
+        this.body = body;
+        //this.imageList = imageList;
+        //게시글 이미지 구현 시 수정 예정
+    }
+
+    public void plusLikes(){
+        this.likes++;
+    }
+
+    public void minusLikes(){
+        this.likes--;
+    }
+
+    public void plusComments(){
+        this.comments++;
+    }
+
+    public void minusComments(){
+        this.comments--;
+    }
 }

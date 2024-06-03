@@ -25,8 +25,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
+	implementation 'com.google.code.gson:gson:2.8.7'
+	//api 통신 관련
+	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -35,8 +40,17 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator' // 로그 보기  http://localhost:8080/actuator/logfile
+	//AWS S3 이미지 업로드 관련
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
+	implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.2"))
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jar {
+    enabled = false
 }
