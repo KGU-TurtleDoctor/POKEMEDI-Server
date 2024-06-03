@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.chatbot.service;
 
+import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.chathistory.DTO.ChatHistoryListResponse;
 import com.turtledoctor.kgu.chathistory.service.ChatHistoryService;
 import com.turtledoctor.kgu.chattext.DTO.ChatTextListResponse;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CookieValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ChatBotService {
+
 
     //Openai Api 관련 서비스
     private final OpenAiApiService openAiApiService;
@@ -38,12 +41,25 @@ public class ChatBotService {
     private final MemberRepository memberRepository;
 
 
+    private JWTUtil jwtUtil;
+
+
     @Transactional(readOnly = true)
     public List<ChatHistoryListResponse> findChatHistoriesByMember(Long kakaoId){
 
         Member member = memberRepository.findBykakaoId(kakaoId.toString());
 
         List<ChatHistoryListResponse> result = chatHistoryService.findChatHistoryList(member);
+
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public ChatHistoryListResponse findChatHistoryByMember(Long kakaoId){
+
+        Member member = memberRepository.findBykakaoId(kakaoId.toString());
+
+        ChatHistoryListResponse result = chatHistoryService.findChatHistoryOne(member);
 
         return result;
     }
@@ -118,12 +134,15 @@ public class ChatBotService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatTextListResponse> findChatTextListByHisotoryID(Long chatHistoryId) throws ValidException {
+    public List<ChatTextListResponse> findChatTextListByHisotoryID(String kakaoId,Long chatHistoryId) throws Exception {
         ChatHistory chatHistory = chatHistoryService.findChatHistory(chatHistoryId);
 
         List<ChatTextListResponse> result = new ArrayList<>();
+        Member member = chatHistory.getMember();
+
+        if(!member.getKakaoId().equals(kakaoId)) throw new Exception("잘못된 요청입니다");
         for(ChatText chatText : chatHistory.getChatTextList()){
-            result.add(ChatTextListResponse.builder().content(chatText.getBody()).role(chatText.getChatRole()).build());
+            result.add(ChatTextListResponse.builder().content(chatText.getBody()).role(chatText.getChatRole().getCode()).build());
         }
 
         return result;

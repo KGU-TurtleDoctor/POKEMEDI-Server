@@ -28,7 +28,7 @@ public class ChatTextService {
         for (ChatText chatText : chatTextList) {
             result.add(ChatTextListResponse.builder()
                     .content(chatText.getBody())
-                    .role(chatText.getChatRole())
+                    .role(chatText.getChatRole().getCode())
                     .build());
         }
 

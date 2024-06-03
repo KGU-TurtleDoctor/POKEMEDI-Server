@@ -1,6 +1,7 @@
 package com.turtledoctor.kgu.post.controller;
 
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
+import com.turtledoctor.kgu.entity.Post;
 import com.turtledoctor.kgu.post.dto.request.*;
 import com.turtledoctor.kgu.post.dto.response.PostListResponse;
 import com.turtledoctor.kgu.post.service.PostService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -58,8 +60,8 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDTO> getPostList() {
-        List<PostListResponse> rawPostList = postService.createPostListDTO(); //조회 시 DB에 리스트가 없다면 nullException 예외
+    public ResponseEntity<ResponseDTO> getPostList(@CookieValue(name = "Authorization") String author) {
+        List<PostListResponse> rawPostList = postService.getPostListDTO(author); //조회 시 DB에 리스트가 없다면 nullException 예외
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
@@ -69,8 +71,12 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/search/{keyword}")
-    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable("keyword") String keyword) {
+    @GetMapping({"/search/{keyword}", "/search/"})
+    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable(name = "keyword", required = false) String keyword) {
+        if (keyword == null) {
+            keyword ="";
+        }
+
         SearchPostRequest postSearchRequestDTO = new SearchPostRequest();
         postSearchRequestDTO.setKeyword(keyword);
         List<PostListResponse> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
@@ -96,5 +102,27 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping("/myPostList")  //내가 쓴 게시글 조회
+    public ResponseEntity<ResponseDTO> getMyPostList(@CookieValue(name = "Authorization") String author) {
+        List<PostListResponse> rawMyPostList = postService.getMyPostListDTO(author);
 
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(rawMyPostList)
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/myPost")
+    public ResponseEntity<ResponseDTO> getMyPost(@CookieValue(name = "Authorization") String author) {
+        PostListResponse rawMyPost = postService.createMyPostDTO(author);
+
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(true)
+                .stateCode(200)
+                .result(rawMyPost)
+                .build();
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }
