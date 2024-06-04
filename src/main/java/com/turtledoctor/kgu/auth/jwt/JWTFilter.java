@@ -2,21 +2,21 @@ package com.turtledoctor.kgu.auth.jwt;
 
 import com.turtledoctor.kgu.auth.dto.CustomOAuth2User;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
+import com.turtledoctor.kgu.auth.exception.CookieNotFoundException;
+import com.turtledoctor.kgu.auth.exception.JWTIsExipiredException;
+import com.turtledoctor.kgu.auth.exception.JWTIsNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Enumeration;
 
 @Slf4j
 public class JWTFilter extends OncePerRequestFilter {
@@ -31,6 +31,12 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = null;
         Cookie[] cookies = request.getCookies();
+
+        // 쿠키가 없어 비어있을 시 Null 체크 추가 및 예외 처리
+        if (cookies == null)
+            throw new CookieNotFoundException("쿠키 자체가 미존재.");
+
+
         for (Cookie cookie : cookies) {
 
             System.out.println(cookie.getName());
@@ -40,11 +46,10 @@ public class JWTFilter extends OncePerRequestFilter {
             }
         }
         //Authorization 헤더 검증
+        //쿠키는 존재했는데, authorization을 key로 가진 쿠키가 없는 경우 체크임.
         if (authorization == null) {
-
-            System.out.println("token null");
+            throw new JWTIsNotFoundException("쿠키는 존재했지만, 로그인 인가 처리를 위한 jwt 쿠키가 존재하지 않을 때임");
             filterChain.doFilter(request, response);
-
             //조건이 해당되면 메소드 종료 (필수)
             return;
         }
@@ -56,6 +61,7 @@ public class JWTFilter extends OncePerRequestFilter {
         if (jwtUtil.isExpired(token)) {
 
             System.out.println("token expired");
+            throw new JWTIsExipiredException("jwt 쿠키 만료, 사용 불가");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
