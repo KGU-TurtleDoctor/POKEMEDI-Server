@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ResponseDTO> handleAuthException(PostException ex){
+    public ResponseEntity<ResponseDTO> handleAuthException(AuthException ex){
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(ex.getErrorCode().isSuccess())
                 .stateCode(ex.getErrorCode().getStatus())
