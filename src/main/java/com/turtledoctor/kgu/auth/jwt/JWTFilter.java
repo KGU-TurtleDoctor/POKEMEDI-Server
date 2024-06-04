@@ -2,6 +2,7 @@ package com.turtledoctor.kgu.auth.jwt;
 
 import com.turtledoctor.kgu.auth.dto.CustomOAuth2User;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
+import com.turtledoctor.kgu.auth.exception.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 
+import static com.turtledoctor.kgu.exception.ErrorCode.UNAUTHORIZED;
+
 @Slf4j
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -31,6 +34,9 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = null;
         Cookie[] cookies = request.getCookies();
+        if(cookies == null) {
+            throw new AuthException(UNAUTHORIZED);
+        }
         for (Cookie cookie : cookies) {
 
             System.out.println(cookie.getName());
