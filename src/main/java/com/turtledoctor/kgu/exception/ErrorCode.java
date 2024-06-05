@@ -19,9 +19,6 @@ public enum ErrorCode {
     //500 INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(false, 500, "서버 에러입니다.");
 
-    //여기서부턴 커스텀 에러 처리.
-    COOKIE_IS_NOT_EXIST(false, 001, "쿠키가 존재하지 않습니다.");
-
     private final boolean success;
     private final int status;
     private final String message;

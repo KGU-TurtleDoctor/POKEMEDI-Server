@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.auth.config;
 
+import com.turtledoctor.kgu.auth.exception.CustomAuthExceptionHandler;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.auth.oauth2.CustomSuccessHandler;
@@ -30,19 +31,20 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
 
+    private final CustomAuthExceptionHandler customAuthExceptionHandler;
+
     @Value("${corsURL}")
     String url;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, CustomAuthExceptionHandler customAuthExceptionHandler) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
+        this.customAuthExceptionHandler = customAuthExceptionHandler;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-
 
         http
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
@@ -77,9 +79,18 @@ public class SecurityConfig {
         http
                 .httpBasic(AbstractHttpConfigurer::disable);
 
+        //CustomAuthExceptionFilter 추가
+        http
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling
+                                .authenticationEntryPoint(customAuthExceptionHandler)
+                                .accessDeniedHandler(customAuthExceptionHandler)
+                );
+
         //JWTFilter 추가
         http
-                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
+
 
         //oauth2
         http
