@@ -1,5 +1,6 @@
 package com.turtledoctor.kgu.auth.config;
 
+import com.turtledoctor.kgu.auth.exception.CustomAuthenticationEntryPoint;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.auth.jwt.JWTExceptionFilter;
@@ -29,15 +30,17 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
     private final JWTExceptionFilter jwtExceptionFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Value("${corsURL}")
     String url;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTExceptionFilter jwtExceptionFilter) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTExceptionFilter jwtExceptionFilter, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
         this.jwtExceptionFilter = jwtExceptionFilter;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     @Bean
@@ -53,7 +56,7 @@ public class SecurityConfig {
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(0L);
+                        configuration.setMaxAge(3600L);
                         configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
                         return configuration;
                     }
@@ -92,12 +95,15 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        http
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)); // Registering CustomAuthenticationEntryPoint
 
         //JWTFilter 추가
         http
                 .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
+                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
 
 
         return http.build();

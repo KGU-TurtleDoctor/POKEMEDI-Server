@@ -10,11 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,8 +22,6 @@ import java.util.Enumeration;
 import static com.turtledoctor.kgu.exception.ErrorCode.*;
 
 @Slf4j
-@Component
-@Order(2)
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
@@ -39,7 +35,6 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization = null;
         Cookie[] cookies = request.getCookies();
         if(cookies == null) {
-            System.out.println("테스트1 작동");
             throw new AuthException(COOKIE_IS_NOT_EXIST);
         }
         for (Cookie cookie : cookies) {
@@ -52,7 +47,6 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         //Authorization 헤더 검증
         if (authorization == null) {
-            System.out.println("테스트2 작동");
             throw new AuthException(COOKIE_EXIST_BUT_JWT_NOT_EXIST);
         }
 
