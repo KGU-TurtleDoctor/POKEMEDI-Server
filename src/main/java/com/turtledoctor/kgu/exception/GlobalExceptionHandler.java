@@ -28,21 +28,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDTO> handleAuthException(AuthException ex){
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(ex.getErrorCode().isSuccess())
-                .stateCode(200)
+                .stateCode(ex.getErrorCode().getStatus())
                 .result(ex.getErrorCode().getMessage())
                 .build();
 
         return ResponseEntity.status(ex.getErrorCode().getStatus()).body(responseDTO);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ResponseDTO> handleAuthenticationException(AuthenticationException ex) {
-        ResponseDTO responseDTO = ResponseDTO.builder()
-                .isSuccess(false)
-                .stateCode(ErrorCode.UNAUTHORIZED.getStatus())
-                .result(ErrorCode.UNAUTHORIZED.getMessage())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDTO);
-    }
 }

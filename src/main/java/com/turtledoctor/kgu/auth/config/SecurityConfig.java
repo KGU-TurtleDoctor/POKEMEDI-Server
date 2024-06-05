@@ -2,7 +2,7 @@ package com.turtledoctor.kgu.auth.config;
 
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
-import com.turtledoctor.kgu.auth.jwt.JwtExceptionFilter;
+import com.turtledoctor.kgu.auth.jwt.JWTExceptionFilter;
 import com.turtledoctor.kgu.auth.oauth2.CustomSuccessHandler;
 import com.turtledoctor.kgu.auth.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,12 +28,12 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService; // 생성자를 통해 객체 주입
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
-    private final JwtExceptionFilter jwtExceptionFilter;
+    private final JWTExceptionFilter jwtExceptionFilter;
 
     @Value("${corsURL}")
     String url;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JwtExceptionFilter jwtExceptionFilter) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTExceptionFilter jwtExceptionFilter) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;

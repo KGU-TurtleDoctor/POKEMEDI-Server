@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 @Component
-public class JwtExceptionFilter extends OncePerRequestFilter {
+public class JWTExceptionFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -21,7 +21,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (AuthException ex) {
-            setResponse(response, ErrorCode.UNAUTHORIZED);
+            setResponse(response, ex.getErrorCode());
         }
     }
     private void setResponse(HttpServletResponse response, ErrorCode errorCode) throws RuntimeException, IOException {
