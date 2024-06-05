@@ -53,20 +53,52 @@ public class SecurityConfig {
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(3600L);
+                        configuration.setMaxAge(0L);
                         configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
                         return configuration;
                     }
-                }))
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/*", "/error", "/api/chatbot/*").permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                }));
+
+        //csrf disable
+        http
+
+                .csrf(AbstractHttpConfigurer::disable);
+        //From 로그인 방식 disable
+        http
+                .formLogin(AbstractHttpConfigurer::disable);
+
+        //HTTP Basic 인증 방식 disable
+        http
+                .httpBasic(AbstractHttpConfigurer::disable);
+
+
+        //oauth2
+        http
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService))
+                        .successHandler(customSuccessHandler)
+
+                );
+
+        //경로별 인가 작업
+        http
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/*","/error","/api/chatbot/*", "/exception/**").permitAll()
+                        .anyRequest().authenticated());
+
+        //세션 설정 : STATELESS
+        http
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
+        //JWTFilter 추가
+        http
+                .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
+
 
         return http.build();
     }
