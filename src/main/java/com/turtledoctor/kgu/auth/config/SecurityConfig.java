@@ -52,6 +52,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
+                        configuration.setAllowedOrigins(Collections.singletonList(url));
                         configuration.setAllowedOrigins(Arrays.asList(url, "http://localhost:5173"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
@@ -87,7 +88,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/*","/error","/api/chatbot/*", "/exception/**").permitAll()
+                        .requestMatchers("/*","/error","/api/chatbot/*").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
@@ -95,6 +96,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        // 인증 실패 시 CustomAuthenticationEntryPoint 사용
         http
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)); // Registering CustomAuthenticationEntryPoint
