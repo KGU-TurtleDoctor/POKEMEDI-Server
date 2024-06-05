@@ -47,12 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         //Authorization 헤더 검증
         if (authorization == null) {
-
-            System.out.println("token null");
-            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료 (필수)
-            return;
+            throw new AuthException(UNAUTHORIZED);
         }
 
         //토큰
@@ -74,6 +69,8 @@ public class JWTFilter extends OncePerRequestFilter {
         String email = jwtUtil.getEmail(token); // 추가
         log.info(email+"\n12341234");
         String role = jwtUtil.getRole(token);
+
+
 
         //userDTO를 생성하여 값 set
         UserDTO userDTO = new UserDTO();

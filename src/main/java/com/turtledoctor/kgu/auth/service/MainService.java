@@ -3,6 +3,7 @@ package com.turtledoctor.kgu.auth.service;
 
 import com.turtledoctor.kgu.auth.dto.LoginDTO;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
+import com.turtledoctor.kgu.auth.exception.AuthException;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.entity.Member;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.turtledoctor.kgu.exception.ErrorCode.UNAUTHORIZED;
 
 @Service
 @Slf4j
@@ -34,6 +37,9 @@ public class MainService {
 
     public LoginDTO returnInfo(String jwtToken){
         jwtUtil = new JWTUtil(secret);
+        if(jwtUtil == null) {
+            throw new AuthException(UNAUTHORIZED);
+        }
         UserDTO userDTO = new UserDTO();
         userDTO.setName(jwtUtil.getName(jwtToken));
         userDTO.setKakaoId(jwtUtil.getkakaoId(jwtToken));
