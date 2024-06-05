@@ -84,7 +84,6 @@ public class SecurityConfig {
                 .exceptionHandling(
                         exceptionHandling -> exceptionHandling
                                 .authenticationEntryPoint(customAuthExceptionHandler)
-                                .accessDeniedHandler(customAuthExceptionHandler)
                 );
 
         //JWTFilter 추가
@@ -104,7 +103,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/*","/error","/api/chatbot/*").permitAll()
+                        .requestMatchers("/*","/error","/api/chatbot/*", "/exception/**").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
@@ -114,4 +113,12 @@ public class SecurityConfig {
 
         return http.build();
     }
-}
+
+
+
+    //jwt 인가 관련 예외 발생시 처리하는 클래스
+//    @Bean
+//    public CustomAuthExceptionHandler customAuthExceptionHandler() {
+//        return new CustomAuthExceptionHandler();
+//    }
+ }

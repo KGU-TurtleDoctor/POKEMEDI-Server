@@ -1,11 +1,10 @@
 package com.turtledoctor.kgu.auth.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turtledoctor.kgu.auth.dto.CustomOAuth2User;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
-import com.turtledoctor.kgu.auth.exception.AuthErrorCode;
-import com.turtledoctor.kgu.auth.exception.CookieNotFoundException;
-import com.turtledoctor.kgu.auth.exception.JWTIsExipiredException;
-import com.turtledoctor.kgu.auth.exception.JWTIsNotFoundException;
+import com.turtledoctor.kgu.auth.exception.*;
+import com.turtledoctor.kgu.response.ResponseDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignatureException;
 
 import static com.turtledoctor.kgu.auth.exception.AuthErrorCode.*; //errorcode 처리
 
@@ -32,67 +32,71 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = null;
-        Cookie[] cookies = request.getCookies();
+        try {
+            String authorization = null;
+            Cookie[] cookies = request.getCookies();
 
-        // 쿠키가 없어 비어있을 시 Null 체크 추가 및 예외 처리
-        if (cookies == null)
-            throw new CookieNotFoundException(COOKIE_IS_NOT_EXIST);
+            if (cookies == null) {
+                throw new CookieNotFoundException(COOKIE_IS_NOT_EXIST);
+            }
 
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+                    authorization = cookie.getValue();
+                }
+            }
 
-        for (Cookie cookie : cookies) {
+            if (authorization == null) {
+                throw new JWTIsNotFoundException(COOKIE_EXIST_BUT_JWT_NOT_EXIST);
+            }
 
-            System.out.println(cookie.getName());
-            if (cookie.getName().equals("Authorization")) {
+            String token = authorization;
 
-                authorization = cookie.getValue();
+            if (jwtUtil.isExpired(token)) {
+                throw new JWTIsExipiredException(COOKIE_IS_EXPIRED);
+            }
+
+            String kakaoId = jwtUtil.getkakaoId(token);
+            String name = jwtUtil.getName(token);
+            String email = jwtUtil.getEmail(token);
+            String role = jwtUtil.getRole(token);
+
+            UserDTO userDTO = new UserDTO();
+            userDTO.setKakaoId(kakaoId);
+            userDTO.setName(name);
+            userDTO.setEmail(email);
+            userDTO.setRole(role);
+
+            CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);
+
+            Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            filterChain.doFilter(request, response);
+        } catch (RuntimeException ex) {
+            if (ex instanceof CookieNotFoundException) {
+                handleException(response, ((CookieNotFoundException) ex).getAuthErrorCode());
+            } else if (ex instanceof JWTIsNotFoundException) {
+                handleException(response, ((JWTIsNotFoundException) ex).getAuthErrorCode());
+            } else if (ex instanceof JWTIsExipiredException) {
+                handleException(response, ((JWTIsExipiredException) ex).getAuthErrorCode());
+            } else {
+                throw ex;  // 예상하지 못한 예외를 다시 던짐
             }
         }
-        //Authorization 헤더 검증
-        //쿠키는 존재했는데, authorization을 key로 가진 쿠키가 없는 경우 체크임.
-        if (authorization == null) {
-            throw new JWTIsNotFoundException(COOKIE_EXIST_BUT_JWT_NOT_EXIST);
-//            filterChain.doFilter(request, response);
-            //조건이 해당되면 메소드 종료 (필수)
-//            return;
-        }
+    }
 
-        //토큰
-        String token = authorization;
+    private void handleException(HttpServletResponse response, AuthErrorCode errorCode) throws IOException {
+        ResponseDTO responseDTO = ResponseDTO.builder()
+                .isSuccess(errorCode.isSuccess())
+                .stateCode(errorCode.getStatus())
+                .result(errorCode.getMessage())
+                .build();
 
-        //토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
-
-            System.out.println("token expired");
-            throw new JWTIsExipiredException(COOKIE_IS_EXPIRED);
-//            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료 (필수)
-//            return;
-        }
-
-        //토큰에서 kakaoId과 role 획득
-        String kakaoId = jwtUtil.getkakaoId(token);
-        String name = jwtUtil.getName(token); // 추가
-        String email = jwtUtil.getEmail(token); // 추가
-        log.info(email+"\n12341234");
-        String role = jwtUtil.getRole(token);
-
-        //userDTO를 생성하여 값 set
-        UserDTO userDTO = new UserDTO();
-        userDTO.setKakaoId(kakaoId);
-        userDTO.setName(name); // 추가
-        userDTO.setEmail(email); // 추가
-        userDTO.setRole(role);
-
-        //UserDetails에 회원 정보 객체 담기
-        CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);
-
-        //스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
-        //세션에 사용자 등록
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        filterChain.doFilter(request, response);
+        response.setStatus(errorCode.getStatus());
+        response.setContentType("application/json; charset=UTF-8"); // 인코딩을 UTF-8로 설정
+        response.setCharacterEncoding("UTF-8"); // 응답의 문자 인코딩을 UTF-8로 설정
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.getWriter().write(objectMapper.writeValueAsString(responseDTO));
     }
 }
