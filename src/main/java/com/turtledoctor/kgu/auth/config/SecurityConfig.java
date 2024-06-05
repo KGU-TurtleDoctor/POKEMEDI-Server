@@ -53,12 +53,12 @@ public class SecurityConfig {
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
                         configuration.setAllowedOrigins(Collections.singletonList(url));
-                        configuration.setAllowedOrigins(Arrays.asList(url, "http://localhost:5173"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.setAllowedMethods(Collections.singletonList(""));
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.setAllowedHeaders(Collections.singletonList(""));
                         configuration.setMaxAge(3600L);
-                        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
                         return configuration;
                     }
                 }));
