@@ -55,13 +55,13 @@ public class ChatBotService {
     }
 
     @Transactional(readOnly = true)
-    public ChatHistoryListResponse findChatHistoryByMember(Long kakaoId){
+    public List<ChatHistoryListResponse> findChatHistoryByMember(Long kakaoId){
 
         Member member = memberRepository.findBykakaoId(kakaoId.toString());
-
+        List<ChatHistoryListResponse> resultList = new ArrayList<>();
         ChatHistoryListResponse result = chatHistoryService.findChatHistoryOne(member);
-
-        return result;
+        resultList.add(result);
+        return resultList;
     }
 
     private ChatHistory updateChatHistory(ChatHistory chatHistory){
