@@ -1,6 +1,7 @@
 package com.turtledoctor.kgu.auth.config;
 
 import com.turtledoctor.kgu.auth.exception.CustomAuthenticationEntryPoint;
+import com.turtledoctor.kgu.auth.jwt.CustomLogoutFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
 import com.turtledoctor.kgu.auth.jwt.JWTExceptionFilter;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -32,6 +34,7 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final JWTExceptionFilter jwtExceptionFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
 
     @Value("${corsURL}")
     String url;
@@ -106,6 +109,10 @@ public class SecurityConfig {
         //JWTFilter 추가
         http
                 .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(jwtExceptionFilter, LogoutFilter.class);
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class);
         http
                 .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
 
