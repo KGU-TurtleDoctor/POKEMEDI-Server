@@ -3,6 +3,7 @@ package com.turtledoctor.kgu.auth.service;
 
 import com.turtledoctor.kgu.auth.dto.LoginDTO;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
+import com.turtledoctor.kgu.auth.dto.isLoginCheckDTO;
 import com.turtledoctor.kgu.auth.exception.AuthException;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.turtledoctor.kgu.exception.ErrorCode.UNAUTHORIZED;
+import static com.turtledoctor.kgu.exception.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -56,6 +57,17 @@ public class MainService {
 
 
         return loginDTO;
+    }
+
+    public isLoginCheckDTO returnIsLogin(String jwtToken) {
+        isLoginCheckDTO isLoginCheckDTO = new isLoginCheckDTO();
+        boolean value = true;
+        if(jwtToken == null)
+            value = false;
+        // 현재 문제. jwt 유효 검증을 하지 않음. cookie의 key만 Authorization이면 통과시키기 때문에 추후 보안을 생각하면 수정 필요.
+        isLoginCheckDTO.setLoginStatus(value);
+
+        return isLoginCheckDTO;
     }
 
 

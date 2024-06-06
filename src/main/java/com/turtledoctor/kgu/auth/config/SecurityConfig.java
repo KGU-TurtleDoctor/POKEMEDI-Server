@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -89,7 +90,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/*","/error","/api/chatbot/*").permitAll()
+                        .requestMatchers("/error", "/api/isLogin").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
@@ -111,4 +112,17 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    //로그인 여부 체크에 한해서만, springSecurity 필터 거치지 않도록 해결.
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> {
+            web.ignoring()
+                    .requestMatchers(
+                            "/api/isLogin"
+                    );
+        };
+    }
 }
+
+
