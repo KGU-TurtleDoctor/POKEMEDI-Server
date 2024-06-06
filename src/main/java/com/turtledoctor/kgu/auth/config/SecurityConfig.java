@@ -1,7 +1,9 @@
 package com.turtledoctor.kgu.auth.config;
 
+import com.turtledoctor.kgu.auth.exception.CustomAuthenticationEntryPoint;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
+import com.turtledoctor.kgu.auth.jwt.JWTExceptionFilter;
 import com.turtledoctor.kgu.auth.oauth2.CustomSuccessHandler;
 import com.turtledoctor.kgu.auth.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,36 +29,34 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService; // 생성자를 통해 객체 주입
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final JWTExceptionFilter jwtExceptionFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Value("${corsURL}")
     String url;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTExceptionFilter jwtExceptionFilter, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
+        this.jwtExceptionFilter = jwtExceptionFilter;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 
-
         http
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
                         CorsConfiguration configuration = new CorsConfiguration();
-
-//                        configuration.setAllowedOrigins(Collections.singletonList(url));
-                        configuration.setAllowedOrigins(Arrays.asList(url,"http://localhost:5173"));
+                        configuration.setAllowedOrigins(Collections.singletonList(url));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
-
                         configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
                         configuration.setExposedHeaders(Collections.singletonList("Authorization"));
                         return configuration;
@@ -65,8 +65,8 @@ public class SecurityConfig {
 
         //csrf disable
         http
-                .csrf(AbstractHttpConfigurer::disable);
 
+                .csrf(AbstractHttpConfigurer::disable);
         //From 로그인 방식 disable
         http
                 .formLogin(AbstractHttpConfigurer::disable);
@@ -75,9 +75,6 @@ public class SecurityConfig {
         http
                 .httpBasic(AbstractHttpConfigurer::disable);
 
-        //JWTFilter 추가
-        http
-                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
 
         //oauth2
         http
@@ -98,6 +95,18 @@ public class SecurityConfig {
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        // 인증 실패 시 CustomAuthenticationEntryPoint 사용
+        http
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)); // Registering CustomAuthenticationEntryPoint
+
+        //JWTFilter 추가
+        http
+                .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
+
 
         return http.build();
     }

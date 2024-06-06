@@ -2,6 +2,7 @@ package com.turtledoctor.kgu.auth.jwt;
 
 import com.turtledoctor.kgu.auth.dto.CustomOAuth2User;
 import com.turtledoctor.kgu.auth.dto.UserDTO;
+import com.turtledoctor.kgu.auth.exception.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 
+import static com.turtledoctor.kgu.exception.ErrorCode.*;
+
 @Slf4j
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -31,6 +34,9 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = null;
         Cookie[] cookies = request.getCookies();
+        if(cookies == null) {
+            throw new AuthException(COOKIE_IS_NOT_EXIST);
+        }
         for (Cookie cookie : cookies) {
 
             System.out.println(cookie.getName());
@@ -41,25 +47,18 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         //Authorization 헤더 검증
         if (authorization == null) {
-
-            System.out.println("token null");
-            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료 (필수)
-            return;
+            throw new AuthException(COOKIE_EXIST_BUT_JWT_NOT_EXIST);
         }
 
         //토큰
         String token = authorization;
 
+        // 토큰 유효성 검증
+        jwtUtil.validateToken(token);
+
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
-
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료 (필수)
-            return;
+            throw new AuthException(COOKIE_IS_EXPIRED);
         }
 
         //토큰에서 kakaoId과 role 획득

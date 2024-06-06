@@ -1,7 +1,10 @@
 package com.turtledoctor.kgu.auth.jwt;
 
 
+import com.turtledoctor.kgu.auth.exception.AuthException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,6 +13,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+
+import static com.turtledoctor.kgu.exception.ErrorCode.INVALID_JWT_SIGNATURE;
 
 @Component
 @Slf4j
@@ -34,29 +39,50 @@ public class JWTUtil {
                 .compact();
     }
 
-    public String getkakaoId(String token) {
+    private Claims getClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (SignatureException e) {
+            log.error("JWT signature error: {}", e.getMessage());
+            throw new AuthException(INVALID_JWT_SIGNATURE);
+        } catch (Exception e) {
+            log.error("JWT parsing error: {}", e.getMessage());
+            throw new AuthException(INVALID_JWT_SIGNATURE);
+        }
+    }
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("kakaoId", String.class);
+    public String getkakaoId(String token) {
+        return getClaims(token).get("kakaoId", String.class);
     }
 
     public String getRole(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+        return getClaims(token).get("role", String.class);
     }
+
     public String getEmail(String token) { // 추가
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
+        return getClaims(token).get("email", String.class);
     }
-
 
     public String getName(String token) { // 추가
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("name", String.class);
+        return getClaims(token).get("name", String.class);
     }
 
     public Boolean isExpired(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        return getClaims(token).getExpiration().before(new Date());
     }
 
+    public void validateToken(String token) {
+        getClaims(token); // This will throw an exception if the token is invalid
+    }
+
+    public void validateToken(String token, String expectedKakaoId) {
+        validateToken(token); // Check if the token is valid
+        if (!getkakaoId(token).equals(expectedKakaoId)) {
+            throw new AuthException(INVALID_JWT_SIGNATURE);
+        }
+    }
 }
