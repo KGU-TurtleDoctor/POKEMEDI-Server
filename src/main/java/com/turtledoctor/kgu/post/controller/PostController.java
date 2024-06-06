@@ -23,7 +23,10 @@ public class PostController {
     @Autowired
     private final PostService postService;
 
-    @PostMapping("/create")
+
+    /** 게시글 기능 영역 */
+
+    @PostMapping("/create")  //게시글 셍성
     public ResponseEntity<ResponseDTO> createPost(@CookieValue(name = "Authorization") String author, @RequestBody CreatePostRequest createPostRequestDTO) {
 
         ResponseDTO responseDTO = ResponseDTO.builder()
@@ -34,7 +37,7 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping("/update/{postId}")
+    @PutMapping("/update/{postId}")  //게시글 수정
     public ResponseEntity<ResponseDTO> updatePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId, @RequestBody UpdatePostRequest updatePostRequestDTO) {
         updatePostRequestDTO.setPostId(postId);
 
@@ -46,7 +49,7 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("/delete/{postId}")  //게시글 삭제
     public ResponseEntity<ResponseDTO> deletePost(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
         DeletePostRequest deletePostRequestDTO = new DeletePostRequest();
         deletePostRequestDTO.setPostId(postId);
@@ -59,9 +62,12 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/list")
+
+    /** 커뮤니티 페이지 영역 */
+
+    @GetMapping("/list")  //게시글 전체 조회
     public ResponseEntity<ResponseDTO> getPostList(@CookieValue(name = "Authorization") String author) {
-        List<PostListResponse> rawPostList = postService.getPostListDTO(author); //조회 시 DB에 리스트가 없다면 nullException 예외
+        List<PostListResponse> rawPostList = postService.getPostList(author); //조회 시 DB에 리스트가 없다면 nullException 예외
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
@@ -71,7 +77,7 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping({"/search/{keyword}", "/search/"})
+    @GetMapping({"/search/{keyword}", "/search/"})  //게시글 검색 조회
     public ResponseEntity<ResponseDTO> searchPostList(@PathVariable(name = "keyword", required = false) String keyword) {
         if (keyword == null) {
             keyword ="";
@@ -79,7 +85,7 @@ public class PostController {
 
         SearchPostRequest postSearchRequestDTO = new SearchPostRequest();
         postSearchRequestDTO.setKeyword(keyword);
-        List<PostListResponse> rawPostList = postService.createSearchedPostListDTO(postSearchRequestDTO);
+        List<PostListResponse> rawPostList = postService.getSearchedPostList(postSearchRequestDTO);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
@@ -89,7 +95,10 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/detail/{postId}")
+
+    /** 게시글 상세 페이지 영역 */
+
+    @GetMapping("/detail/{postId}")  //게시글 상세 조회
     public ResponseEntity<ResponseDTO> getPostDetail(@CookieValue(name = "Authorization") String author, @PathVariable("postId") Long postId) {
         GetPostDetailRequest getPostDetailRequestDTO = new GetPostDetailRequest();
         getPostDetailRequestDTO.setPostId(postId);
@@ -97,14 +106,17 @@ public class PostController {
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(200)
-                .result(postService.getPostDetailDTO(getPostDetailRequestDTO, author))
+                .result(postService.getPostDetail(getPostDetailRequestDTO, author))
                 .build();
         return ResponseEntity.ok().body(responseDTO);
     }
 
+
+    /** 마이 페이지 영역 */
+
     @GetMapping("/myPostList")  //내가 쓴 게시글 조회
     public ResponseEntity<ResponseDTO> getMyPostList(@CookieValue(name = "Authorization") String author) {
-        List<PostListResponse> rawMyPostList = postService.getMyPostListDTO(author);
+        List<PostListResponse> rawMyPostList = postService.getMyPostList(author);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
@@ -114,9 +126,9 @@ public class PostController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/myPost")
+    @GetMapping("/myPost")  //내가 쓴 게시글 하나 조회
     public ResponseEntity<ResponseDTO> getMyPost(@CookieValue(name = "Authorization") String author) {
-        PostListResponse rawMyPost = postService.createMyPostDTO(author);
+        List<PostListResponse> rawMyPost = postService.getMyPost(author);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)

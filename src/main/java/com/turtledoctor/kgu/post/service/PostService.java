@@ -37,6 +37,9 @@ public class PostService {
 
     private JWTUtil jwtUtil;
 
+
+    /** 게시글 기능 영역 */
+
     @Transactional
     public Long createPost(CreatePostRequest createPostRequestDTO, String author) {
 
@@ -94,8 +97,11 @@ public class PostService {
         return true;
     }
 
+
+    /** 게시글 기능 영역 */
+
     @Transactional(readOnly = true)
-    public List<PostListResponse> getPostListDTO(String author) {
+    public List<PostListResponse> getPostList(String author) {
 
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);
@@ -119,7 +125,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListResponse> createSearchedPostListDTO(SearchPostRequest postSearchRequestDTO) {
+    public List<PostListResponse> getSearchedPostList(SearchPostRequest postSearchRequestDTO) {
         String keyword = postSearchRequestDTO.getKeyword();
         List<Post> rawSearchedPostList;
 
@@ -145,7 +151,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostDetailResponse getPostDetailDTO(GetPostDetailRequest getPostDetailRequestDTO, String author) {
+    public PostDetailResponse getPostDetail(GetPostDetailRequest getPostDetailRequestDTO, String author) {
 
         Optional<Post> optionalPost = postRepository.findById(getPostDetailRequestDTO.getPostId());
         if(optionalPost.isEmpty()) {
@@ -173,7 +179,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListResponse> getMyPostListDTO(String author) {
+    public List<PostListResponse> getMyPostList(String author) {
 
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);
@@ -187,6 +193,7 @@ public class PostService {
                     .content(post.getBody())
                     .nickname(post.getMember().getName())
                     .date(DateConverter.ConverteDate(post.getCreatedAt()))
+                    .isWriter(true)
                     .build();
             postList.add(dto);
         }
@@ -194,17 +201,26 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostListResponse createMyPostDTO(String author) {
+    public List<PostListResponse> getMyPost(String author) {
+
         jwtUtil = new JWTUtil(secret);
         String kakaoId = jwtUtil.getkakaoId(author);
+
         Post rawMyPost = postRepository.findTop1ByMemberOrderByCreatedAtDesc(memberRepository.findBykakaoId(kakaoId));
-        PostListResponse dto = PostListResponse.builder()
-                .id(rawMyPost.getId())
-                .title(rawMyPost.getTitle())
-                .content(rawMyPost.getBody())
-                .nickname(rawMyPost.getMember().getName())
-                .date(DateConverter.ConverteDate(rawMyPost.getCreatedAt()))
-                .build();
-        return dto;
+        List<PostListResponse> post = new ArrayList<>();
+
+        if(rawMyPost != null) {
+            PostListResponse dto = PostListResponse.builder()
+                    .id(rawMyPost.getId())
+                    .title(rawMyPost.getTitle())
+                    .content(rawMyPost.getBody())
+                    .nickname(rawMyPost.getMember().getName())
+                    .date(DateConverter.ConverteDate(rawMyPost.getCreatedAt()))
+                    .isWriter(true)
+                    .build();
+            post.add(dto);
+        }
+
+        return post;
     }
 }
