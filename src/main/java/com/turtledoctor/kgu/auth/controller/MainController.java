@@ -36,5 +36,17 @@ public class MainController {
 
         return response;
     }
+
+    @GetMapping("/api/isLogin")
+    public ResponseEntity<ResponseDTO> isLoginCheckAPI(@CookieValue(name = "Authorization", required = false) String jwtToken) {
+
+        ResponseEntity<ResponseDTO> response = ResponseEntity.ok().body(ResponseDTO.builder()
+                        .isSuccess(true)
+                        .stateCode(200)
+                        .result(mainService.returnIsLogin(jwtToken))
+                        .build());
+
+        return response;
+    }
 }
 
