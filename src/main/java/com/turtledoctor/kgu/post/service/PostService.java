@@ -125,7 +125,11 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListResponse> getSearchedPostList(SearchPostRequest postSearchRequestDTO) {
+    public List<PostListResponse> getSearchedPostList(SearchPostRequest postSearchRequestDTO, String author) {
+
+        jwtUtil = new JWTUtil(secret);
+        String kakaoId = jwtUtil.getkakaoId(author);
+
         String keyword = postSearchRequestDTO.getKeyword();
         List<Post> rawSearchedPostList;
 
@@ -138,12 +142,14 @@ public class PostService {
 
         List<PostListResponse> postList= new ArrayList<>();
         for(Post post : rawSearchedPostList) {
+            boolean isWriter = kakaoId.equals(post.getMember().getKakaoId());
             PostListResponse dto = PostListResponse.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getBody())
                     .nickname(post.getMember().getName())
                     .date(DateConverter.ConverteDate(post.getCreatedAt()))
+                    .isWriter(isWriter)
                     .build();
             postList.add(dto);
         }
