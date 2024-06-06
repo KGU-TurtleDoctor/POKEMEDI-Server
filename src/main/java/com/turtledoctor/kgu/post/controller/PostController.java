@@ -78,14 +78,14 @@ public class PostController {
     }
 
     @GetMapping({"/search/{keyword}", "/search/"})  //게시글 검색 조회
-    public ResponseEntity<ResponseDTO> searchPostList(@PathVariable(name = "keyword", required = false) String keyword) {
+    public ResponseEntity<ResponseDTO> searchPostList(@CookieValue(name = "Authorization") String author, @PathVariable(name = "keyword", required = false) String keyword) {
         if (keyword == null) {
             keyword ="";
         }
 
         SearchPostRequest postSearchRequestDTO = new SearchPostRequest();
         postSearchRequestDTO.setKeyword(keyword);
-        List<PostListResponse> rawPostList = postService.getSearchedPostList(postSearchRequestDTO);
+        List<PostListResponse> rawPostList = postService.getSearchedPostList(postSearchRequestDTO, author);
 
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
