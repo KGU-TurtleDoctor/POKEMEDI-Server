@@ -60,7 +60,9 @@ public class ChatBotService {
         Member member = memberRepository.findBykakaoId(kakaoId.toString());
         List<ChatHistoryListResponse> resultList = new ArrayList<>();
         ChatHistoryListResponse result = chatHistoryService.findChatHistoryOne(member);
-        resultList.add(result);
+        if(result!=null){
+            resultList.add(result);
+        }
         return resultList;
     }
 
