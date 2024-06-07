@@ -109,8 +109,8 @@ public class SecurityConfig {
         //JWTFilter 추가
         http
                 .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
-        http
-                .addFilterBefore(jwtExceptionFilter, LogoutFilter.class);
+//        http
+//                .addFilterBefore(jwtExceptionFilter, LogoutFilter.class);
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class);
         http
