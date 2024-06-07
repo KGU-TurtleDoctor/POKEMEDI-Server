@@ -12,6 +12,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -33,12 +34,12 @@ public class CustomLogoutFilter extends GenericFilterBean {
 //path and method verify
         String requestUri = request.getRequestURI();
         if (!requestUri.matches("^\\/logout$")) {
-                filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
             return;
         }
         String requestMethod = request.getMethod();
         if (!requestMethod.equals("POST")) {
-                filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -68,11 +69,10 @@ public class CustomLogoutFilter extends GenericFilterBean {
         //로그아웃 진행
 
         //Refresh 토큰 Cookie 값 0
-        Cookie cookie = new Cookie("Authorization", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
+//        Cookie cookie = new Cookie("Authorization", null);
+//        cookie.setMaxAge(0);
+//        cookie.setPath("/");
+        response.addHeader("Set-Cookie", createCookie("Authorization", null).toString());
         ResponseDTO responseDTO = ResponseDTO.builder()
                 .isSuccess(true)
                 .stateCode(HttpServletResponse.SC_OK)
@@ -85,5 +85,16 @@ public class CustomLogoutFilter extends GenericFilterBean {
         objectMapper.writeValue(response.getWriter(), responseDTO);
     }
 
+    private ResponseCookie createCookie(String key, String value) {
+        ResponseCookie responseCookie = ResponseCookie.from(key, value)
+                .path("/")
+                .sameSite("None")
+                .maxAge(0)
+                .secure(true)
+                .httpOnly(true)
+                .build();
+
+        return responseCookie;
+    }
 }
 
