@@ -41,7 +41,7 @@ public class JWTUtil {
 
     private Claims getClaims(String token) {
         try {
-            //Jwts.parser() 대신 JWTParserBuilder 사용으로 변경
+            //jwts의 deprecated 된 코드 부분 수정
             return Jwts.parser()
                     .setSigningKey(secretKey)
                     .build().parseSignedClaims(token).getPayload();

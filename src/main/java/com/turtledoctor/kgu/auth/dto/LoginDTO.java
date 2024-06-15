@@ -6,7 +6,6 @@ import lombok.*;
 
 @Getter
 @Builder
-@Setter
 public class LoginDTO {
     private String name;
     private UserRole userRole;
