@@ -28,10 +28,12 @@ import static com.turtledoctor.kgu.exception.ErrorCode.*;
 public class MainService {
 
 
+
+
      @Value("${spring.jwt.secret}")
     String secret;
-        JWTUtil jwtUtil;
 
+     JWTUtil jwtUtil;
     private final MemberRepository memberRepository;
 
 
@@ -42,9 +44,9 @@ public class MainService {
             throw new AuthException(UNAUTHORIZED);
         }
         UserDTO userDTO = new UserDTO();
-        userDTO.setName(jwtUtil.getName(jwtToken));
+//        userDTO.setName(jwtUtil.getName(jwtToken)); // 제거
         userDTO.setKakaoId(jwtUtil.getkakaoId(jwtToken));
-        userDTO.setEmail(jwtUtil.getEmail(jwtToken));
+//        userDTO.setEmail(jwtUtil.getEmail(jwtToken)); // 제거
         userDTO.setRole(jwtUtil.getRole(jwtToken));
 
         Member member = memberRepository.findBykakaoId(userDTO.getKakaoId());
@@ -60,11 +62,15 @@ public class MainService {
     }
 
     public isLoginCheckDTO returnIsLogin(String jwtToken) {
+        jwtUtil = new JWTUtil(secret);
         isLoginCheckDTO isLoginCheckDTO = new isLoginCheckDTO();
         boolean value = true;
         if(jwtToken == null)
             value = false;
-        // 현재 문제. jwt 유효 검증을 하지 않음. cookie의 key만 Authorization이면 통과시키기 때문에 추후 보안을 생각하면 수정 필요.
+
+        // 아래 작업을 통해 jwt 존재 시 유효 검증
+        jwtUtil.validateToken(jwtToken);
+
         isLoginCheckDTO.setLoginStatus(value);
 
         return isLoginCheckDTO;
