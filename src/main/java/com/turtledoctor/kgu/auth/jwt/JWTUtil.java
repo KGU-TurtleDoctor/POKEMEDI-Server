@@ -26,12 +26,12 @@ public class JWTUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String createJwt(String kakaoId, String name, String email, String role, Long expiredMs) { // 추가 name, email
+    public String createJwt(String kakaoId, String role, Long expiredMs) {
 
         return Jwts.builder()
                 .claim("kakaoId", kakaoId)
-                .claim("name", name)
-                .claim("email", email)
+//                .claim("name", name) // 제거
+//                .claim("email", email) // 제거
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
@@ -41,11 +41,10 @@ public class JWTUtil {
 
     private Claims getClaims(String token) {
         try {
+            //jwts의 deprecated 된 코드 부분 수정
             return Jwts.parser()
                     .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .build().parseSignedClaims(token).getPayload();
         } catch (SignatureException e) {
             log.error("JWT signature error: {}", e.getMessage());
             throw new AuthException(INVALID_JWT_SIGNATURE);
@@ -63,13 +62,13 @@ public class JWTUtil {
         return getClaims(token).get("role", String.class);
     }
 
-    public String getEmail(String token) { // 추가
-        return getClaims(token).get("email", String.class);
-    }
+//    public String getEmail(String token) { // 추가
+//        return getClaims(token).get("email", String.class);
+//    }
 
-    public String getName(String token) { // 추가
-        return getClaims(token).get("name", String.class);
-    }
+//    public String getName(String token) { // 추가
+//        return getClaims(token).get("name", String.class);
+//    }
 
     public Boolean isExpired(String token) {
         return getClaims(token).getExpiration().before(new Date());
@@ -77,12 +76,5 @@ public class JWTUtil {
 
     public void validateToken(String token) {
         getClaims(token); // This will throw an exception if the token is invalid
-    }
-
-    public void validateToken(String token, String expectedKakaoId) {
-        validateToken(token); // Check if the token is valid
-        if (!getkakaoId(token).equals(expectedKakaoId)) {
-            throw new AuthException(INVALID_JWT_SIGNATURE);
-        }
     }
 }

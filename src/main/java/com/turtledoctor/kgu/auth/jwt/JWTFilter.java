@@ -9,13 +9,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Enumeration;
 
@@ -39,7 +40,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         for (Cookie cookie : cookies) {
 
-            System.out.println(cookie.getName());
+//            System.out.println(cookie.getName());
             if (cookie.getName().equals("Authorization")) {
 
                 authorization = cookie.getValue();
@@ -63,16 +64,16 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //토큰에서 kakaoId과 role 획득
         String kakaoId = jwtUtil.getkakaoId(token);
-        String name = jwtUtil.getName(token); // 추가
-        String email = jwtUtil.getEmail(token); // 추가
-        log.info(email+"\n12341234");
+//        String name = jwtUtil.getName(token); // 제거
+//        String email = jwtUtil.getEmail(token); // 제거
+        log.info("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")) + "]JWTFilter 거친 카카오 id : " + kakaoId + "\n");
         String role = jwtUtil.getRole(token);
 
         //userDTO를 생성하여 값 set
         UserDTO userDTO = new UserDTO();
         userDTO.setKakaoId(kakaoId);
-        userDTO.setName(name); // 추가
-        userDTO.setEmail(email); // 추가
+//        userDTO.setName(name); // 제거
+//        userDTO.setEmail(email); // 제거
         userDTO.setRole(role);
 
         //UserDetails에 회원 정보 객체 담기
