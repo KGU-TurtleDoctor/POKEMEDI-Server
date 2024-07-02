@@ -46,6 +46,7 @@ jobs:
         spring.jwt.secret=${{ secrets.JWT_SECRET }}
         redirectURL=${{ secrets.REDIRECT_URL }}
         corsURL=${{ secrets.CORSURL }}
+        corsURL2=${{ secrets.CORSURL2 }}
         openai.api_key=${{ secrets.OPENAI_API_KEY }}
         openai.model=${{ secrets.OPENAI_MODEL }}
         openai.url=${{ secrets.OPENAI_URL }}

@@ -39,6 +39,9 @@ public class SecurityConfig {
     @Value("${corsURL}")
     String url;
 
+    @Value("${corsURL2}")
+    String url2;
+
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTExceptionFilter jwtExceptionFilter, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
@@ -57,7 +60,7 @@ public class SecurityConfig {
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
                         //configuration.setAllowedOrigins(Collections.singletonList(url));
-                        configuration.setAllowedOrigins(Arrays.asList(url,"http://localhost:5173"));
+                        configuration.setAllowedOrigins(Arrays.asList(url, url2, "http://localhost:5173"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
