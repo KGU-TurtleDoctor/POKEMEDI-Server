@@ -4,7 +4,7 @@ import com.turtledoctor.kgu.auth.exception.CustomAuthenticationEntryPoint;
 import com.turtledoctor.kgu.auth.jwt.CustomLogoutFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTFilter;
 import com.turtledoctor.kgu.auth.jwt.JWTUtil;
-import com.turtledoctor.kgu.auth.jwt.JWTExceptionFilter;
+//import com.turtledoctor.kgu.auth.jwt.JWTExceptionFilter;
 import com.turtledoctor.kgu.auth.oauth2.CustomSuccessHandler;
 import com.turtledoctor.kgu.auth.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,18 +32,18 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService; // 생성자를 통해 객체 주입
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
-    private final JWTExceptionFilter jwtExceptionFilter;
+    //private final JWTExceptionFilter jwtExceptionFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 
     @Value("${corsURL}")
     String url;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTExceptionFilter jwtExceptionFilter, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil,/* JWTExceptionFilter jwtExceptionFilter,*/ CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
-        this.jwtExceptionFilter = jwtExceptionFilter;
+        //this.jwtExceptionFilter = jwtExceptionFilter;
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
@@ -108,13 +108,9 @@ public class SecurityConfig {
 
         //JWTFilter 추가
         http
-                .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
-//        http
-//                .addFilterBefore(jwtExceptionFilter, LogoutFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class);
-        http
-                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
 
 
         return http.build();
