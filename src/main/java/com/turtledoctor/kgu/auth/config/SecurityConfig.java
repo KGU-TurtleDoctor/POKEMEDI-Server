@@ -111,7 +111,7 @@ public class SecurityConfig {
 
         //JWTFilter 추가
         http
-                .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 //        http
 //                .addFilterBefore(jwtExceptionFilter, LogoutFilter.class);
         http
