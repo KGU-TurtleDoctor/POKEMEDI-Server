@@ -12,10 +12,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${corsURL}")
     private String url;
 
+    @Value("${corsURL2}")
+    private String url2;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/isLogin")
-                .allowedOrigins(url, "http://localhost:5173")
+                .allowedOrigins(url, url2, "http://localhost:5173")
                 .allowedMethods("*")
                 .allowCredentials(true)
                 .allowedHeaders("*")
