@@ -1,4 +1,8 @@
-# POKEMEDI-Server
+# Architecture
+![image](https://github.com/user-attachments/assets/c7301316-3bd1-489a-868c-af1ec8e92af4)
+
+<br>
+<br>
 
 # 📦프로젝트 구조
 
@@ -52,8 +56,3 @@
             └─ turtledoctor
                └─ kgu
 ```
-
-
-
-# Architecture
-![image](https://github.com/user-attachments/assets/c7301316-3bd1-489a-868c-af1ec8e92af4)
