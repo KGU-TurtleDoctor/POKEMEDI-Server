@@ -59,7 +59,7 @@ jobs:
         management.server.port = ${{ secrets.actuator_port }}
         web_enable_endpoint1=${{ secrets.web_enable_endpoint1 }}
         web_enable_endpoint2=${{ secrets.web_enable_endpoint2 }}
-        management.endpoints.web.base-path = ${{ secrets.actuator_base_path }}
+        management.endpoints.web.base-path=${{ secrets.actuator_base_path }}
         EOF
         
     - name: Grant execute permission for gradlew
