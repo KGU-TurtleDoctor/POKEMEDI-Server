@@ -130,7 +130,7 @@ public class SecurityConfig {
         return web -> {
             web.ignoring()
                     .requestMatchers(
-                            "api/isLogin"
+                            "/api/isLogin"
                     );
         };
     }
