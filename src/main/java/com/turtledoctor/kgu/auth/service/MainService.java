@@ -67,9 +67,8 @@ public class MainService {
         boolean value = true;
         if(jwtToken == null)
             value = false;
-
-        // 아래 작업을 통해 jwt 존재 시 유효 검증
-        jwtUtil.validateToken(jwtToken);
+        else
+            jwtUtil.validateToken(jwtToken); // 아래 작업을 통해 jwt 존재 시 유효 검증
 
         isLoginCheckDTO.setLoginStatus(value);
 
