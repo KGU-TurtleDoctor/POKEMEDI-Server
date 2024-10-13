@@ -119,6 +119,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Value("${web_enable_endpoint1}")
     String url3;
 
