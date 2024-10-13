@@ -120,13 +120,18 @@ public class SecurityConfig {
         return http.build();
     }
 
-    //로그인 여부 체크에 한해서만, springSecurity 필터 거치지 않도록 해결.
+    @Value("${web_enable_endpoint1}")
+    String url3;
+
+    @Value("${web_enable_endpoint2}")
+    String url4;
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
             web.ignoring()
                     .requestMatchers(
-                            "/api/isLogin"
+                            "url3",
+                            "url4"
                     );
         };
     }

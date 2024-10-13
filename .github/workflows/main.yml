@@ -55,6 +55,11 @@ jobs:
         spring.cloud.aws.region.static=${{ secrets.AWS_REGION_FOR_IMAGE_UPLOAD }}
         aws.s3.bucket=${{ secrets.AWS_S3_BUCKET_NAME_FOR_IMAGE_UPLOAD }}
         aws.s3.file.max-size=${{ secrets.AWS_S3_FILE_MAX_SIZE_FOR_IMAGE_UPLOAD }}
+        management.endpoints.web.exposure.include=${{ secrets.enable_actuator_endpoints }}
+        management.server.port = ${{ secrets.actuator_port }}
+        web_enable_endpoint1=${{ secrets.web_enable_endpoint1 }}
+        web_enable_endpoint2=${{ secrets.web_enable_endpoint2 }}
+        management.endpoints.web.base-path = ${{ secrets.actuator_base_path }}
         EOF
         
     - name: Grant execute permission for gradlew

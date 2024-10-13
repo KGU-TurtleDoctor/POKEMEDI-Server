@@ -43,7 +43,10 @@ dependencies {
 	//AWS S3 이미지 업로드 관련
 	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
 	implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.2"))
-//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	//모니터링 관련
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
 
 }
 
