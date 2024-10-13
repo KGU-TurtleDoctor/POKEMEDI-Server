@@ -116,7 +116,6 @@ public class SecurityConfig {
         http
                 .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Before -> After
 
-
         return http.build();
     }
 
