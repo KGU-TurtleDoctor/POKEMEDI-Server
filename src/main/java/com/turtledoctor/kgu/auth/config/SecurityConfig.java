@@ -40,6 +40,8 @@ public class SecurityConfig {
     @Value("${corsURL2}")
     String url2;
 
+    @Value()
+
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
@@ -93,7 +95,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/error", "/api/isLogin").permitAll()
+                        .requestMatchers("url3", "url4","/error").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
