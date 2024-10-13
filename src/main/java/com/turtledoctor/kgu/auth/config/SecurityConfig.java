@@ -93,7 +93,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("url3", "url4","/error").permitAll()
+                        .requestMatchers(url3, url4,"/error").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
@@ -130,8 +130,8 @@ public class SecurityConfig {
         return web -> {
             web.ignoring()
                     .requestMatchers(
-                            "url3",
-                            "url4"
+                            url3,
+                            url4
                     );
         };
     }
